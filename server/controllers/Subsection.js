@@ -58,6 +58,11 @@ exports.updateSubSection = async (req, res) => {
         if (timeDuration) subSection.timeDuration = timeDuration;
 
         if (req.files && req.files.videoFile !== undefined) {
+            
+            const oldVideoUrl = subSection.videoUrl;
+            const publicId = oldVideoUrl.split("/").pop().split(".")[0];
+            await cloudinary.uploader.destroy(publicId, { resource_type: "video" });
+
             const video = req.files.videoFile;
             const uploadDetails = await uploadImageToCloudinary(video, process.env.FOLDER_NAME);
             subSection.videoUrl = uploadDetails.secure_url;

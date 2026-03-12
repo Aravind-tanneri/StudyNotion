@@ -8,7 +8,7 @@ const mailSender = require("../utils/mailSender");
 exports.capturePayment = async (req, res) => {
     try {
         const { courseId } = req.body;
-        const userId = req.user.id; 
+        const userId = req.user.id;
 
         if (!courseId) {
             return res.status(400).json({ success: false, message: "Please provide valid course ID." });
@@ -36,7 +36,7 @@ exports.capturePayment = async (req, res) => {
         const options = {
             amount: amount * 100,
             currency,
-            receipt: Math.random(Date.now()).toString(),
+            receipt: `RCPT_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
             notes: {
                 courseId: courseId,
                 userId: userId,
@@ -46,7 +46,7 @@ exports.capturePayment = async (req, res) => {
         try {
             // const paymentResponse = await instance.orders.create(options);
             const paymentResponse = {
-                id: "order_dummy_" + Math.random().toString(36).substring(2, 10),
+                id: `RCPT_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
                 currency: "INR",
                 amount: options.amount,
             };

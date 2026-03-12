@@ -10,6 +10,8 @@ const courseRoutes = require("./routes/Course");
 const paymentRoutes = require("./routes/Payments");
 const profileRoutes = require("./routes/Profile");
 
+const cors = require("cors");
+
 require("dotenv").config();
 const PORT = process.env.PORT || 4000;
 
@@ -22,6 +24,13 @@ app.use(
         useTempFiles: true,
         tempFileDir: "/tmp",
     })
+);
+
+app.use(
+	cors({
+		origin: "http://localhost:5173", // Replace with actual frontend URL/port
+		credentials: true,
+	})
 );
 
 app.use("/api/auth", userRoutes);

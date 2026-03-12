@@ -1,1 +1,17 @@
 @import "tailwindcss";
+
+@theme {
+  --color-richblack-900: #000814;
+  --color-richblack-800: #000c1d;
+  --color-yellow-50: #FFD60A;
+  --color-pure-greys-5: #F1F2FF;
+
+  --font-inter: "Inter", sans-serif;
+  --font-edu-sa: "Edu SA Beginner", cursive;
+
+  --spacing-13: 3.25rem;
+  
+  --radius-custom: 12px;
+
+  --shadow-blue: 0px 4px 14px rgba(0, 118, 255, 0.39);
+}

@@ -11,7 +11,6 @@ exports.updateProfile = async (req, res) => {
         if (!contactNumber || !gender || !id) {
             return res.status(400).json({ success: false, message: "Missing required fields" });
         }
-
         const userDetails = await User.findById(id);
         const profileId = userDetails.additionalDetails;
         const profileDetails = await Profile.findById(profileId);

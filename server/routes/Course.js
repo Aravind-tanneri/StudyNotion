@@ -10,7 +10,7 @@ const { createCategory, showAllCategories } = require("../controllers/Category")
 
 const { capturePayment, verifySignature } = require("../controllers/Payments");
 
-const { updateProfile, updateDisplayPicture } = require("../controllers/Profile");
+// const { updateProfile, updateDisplayPicture } = require("../controllers/Profile");
 
 router.post("/createCourse", auth, isInstructor, createCourse);
 router.get("/getAllCourses", showAllCourses);
@@ -29,7 +29,7 @@ router.get("/showAllCategories", showAllCategories);
 router.post("/capturePayment", auth, isStudent, capturePayment);
 router.post("/verifySignature", auth, isStudent, verifySignature);
 
-router.put("/updateProfile", auth, updateProfile); 
-router.put("/updateDisplayPicture", auth, updateDisplayPicture);
+// router.put("/updateProfile", auth, updateProfile); 
+// router.put("/updateDisplayPicture", auth, updateDisplayPicture);
 
 module.exports = router;
