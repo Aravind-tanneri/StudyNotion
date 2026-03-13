@@ -13,6 +13,7 @@ import { Navigate } from 'react-router-dom'
 import Settings from './components/core/Dashboard/Settings/index'
 import AddCourse from './components/core/Dashboard/AddCourse'
 import MyCourses from './components/core/Dashboard/MyCourses'
+import EnrolledCourses from './components/core/Dashboard/EnrolledCourses'
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/verify-email" element={<VerifyEmail />} />
+        <Route path="courses/:courseId" element={<CourseDetails />} />
 
         {/* Protected Dashboard Routes */}
         <Route 
@@ -36,11 +38,22 @@ const App = () => {
           <Route path="/dashboard" element={<Navigate to="/dashboard/my-profile" />} />
           <Route path="/dashboard/my-profile" element={<MyProfile />} />
           <Route path="/dashboard/settings" element={<Settings />} />
-          <Route path="/dashboard/enrolled-courses" element={<div className="text-white">Enrolled Courses Here</div>} />
+          <Route path="/dashboard/enrolled-courses" element={<EnrolledCourses/>} />
           <Route path="/dashboard/add-course" element={<AddCourse />} />
           <Route path="dashboard/edit-course/:courseId" element={<EditCourse />} />
           <Route path="/dashboard/my-courses" element={<MyCourses/>}/>
-        
+          <Route element={<ViewCourse />}>
+            {user?.accountType === ACCOUNT_TYPE.STUDENT && (
+              <Route 
+                path="view-course/:courseId/section/:sectionId/sub-section/:subSectionId" 
+                element={<VideoDetails />} 
+            />)}
+          </Route>
+          {user?.accountType === ACCOUNT_TYPE.INSTRUCTOR && (
+            <>
+              <Route path="dashboard/instructor" element={<Instructor />} />
+            </>
+          )}
         </Route>
       </Routes>
 

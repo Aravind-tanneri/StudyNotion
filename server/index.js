@@ -7,7 +7,7 @@ const database = require("./config/database");
 
 const userRoutes = require("./routes/User");
 const courseRoutes = require("./routes/Course");
-const paymentRoutes = require("./routes/payment");
+const paymentRoutes = require("./routes/Payments");
 const profileRoutes = require("./routes/Profile");
 
 const cors = require("cors");

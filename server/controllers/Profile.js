@@ -63,3 +63,46 @@ exports.updateDisplayPicture = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 };
+
+
+const Course = require("../models/Course");
+
+// We fetch and calculate the analytics for our instructor dashboard
+exports.instructorDashboard = async (req, res) => {
+  try {
+    // We fetch all courses created by our currently logged-in instructor
+    const courseDetails = await Course.find({ instructor: req.user.id });
+
+    // We map through our array of courses to calculate the math for each one
+    const courseData = courseDetails.map((course) => {
+      // We count exactly how many students are inside the enrolled array
+      const totalStudentsEnrolled = course.studentsEnrolled.length;
+      
+      // We multiply the student count by the price to find our total revenue
+      const totalAmountGenerated = totalStudentsEnrolled * course.price;
+
+      // We create a fresh object containing only the specific stats our charts need
+      const courseDataWithStats = {
+        _id: course._id,
+        courseName: course.courseName,
+        courseDescription: course.courseDescription,
+        totalStudentsEnrolled,
+        totalAmountGenerated,
+      };
+
+      return courseDataWithStats;
+    });
+
+    // We successfully send our calculated analytics back to the frontend
+    res.status(200).json({
+      success: true,
+      courses: courseData,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
