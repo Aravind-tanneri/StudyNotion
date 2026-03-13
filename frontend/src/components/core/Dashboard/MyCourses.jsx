@@ -3,7 +3,7 @@ import {VscAdd} from "react-icons/vsc"
 import {useSelector} from "react-redux"
 import {useNavigator} from "react-router-dom"
 import {fetchInstructorCourses} from "../../../services/operations/courseDetailsAPI"
-import CoursesTable from "./InstructorCourses/CoursesTable"
+import CoursesTable from "src/components/core/Dashboard/CoursesTable.jsx"
 
 const MyCourses = () => {
     const {token}= useSelector((state)=>state.auth)

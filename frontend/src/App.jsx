@@ -14,6 +14,13 @@ import Settings from './components/core/Dashboard/Settings/index'
 import AddCourse from './components/core/Dashboard/AddCourse'
 import MyCourses from './components/core/Dashboard/MyCourses'
 import EnrolledCourses from './components/core/Dashboard/EnrolledCourses'
+const { user } = useSelector((state) => state.profile);
+import { ACCOUNT_TYPE } from "./utils/constants";
+import CourseDetails from "./pages/CourseDetails"
+import EditCourse from "./components/core/Dashboard/EditCourse"
+import ViewCourse from "./pages/ViewCourse"
+import VideoDetails from "./components/core/ViewCourse/VideoDetails"
+import Instructor from "./components/core/Dashboard/Instructor"
 
 const App = () => {
   return (
