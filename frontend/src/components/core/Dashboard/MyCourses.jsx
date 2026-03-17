@@ -1,9 +1,9 @@
 import React,{useEffect,useState} from 'react'
 import {VscAdd} from "react-icons/vsc"
 import {useSelector} from "react-redux"
-import {useNavigator} from "react-router-dom"
+import {useNavigate} from "react-router-dom"
 import {fetchInstructorCourses} from "../../../services/operations/courseDetailsAPI"
-import CoursesTable from "src/components/core/Dashboard/CoursesTable.jsx"
+import CoursesTable from "./CoursesTable.jsx"
 
 const MyCourses = () => {
     const {token}= useSelector((state)=>state.auth)

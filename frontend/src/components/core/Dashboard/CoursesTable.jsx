@@ -6,7 +6,7 @@ import { RiDeleteBin6Line } from "react-icons/ri"
 import { useNavigate } from "react-router-dom"
 import { useSelector } from "react-redux"
 import {deleteCourse,fetchInstructorCourses} from "../../../services/operations/courseDetailsAPI"
-import ConfirmationModal from "../../common/ConformationModal"
+import ConfirmationModal from "../../common/ConfirmationModal"
 
 const CoursesTable = ({courses,setCourses}) => {
 

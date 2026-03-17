@@ -1,88 +1,254 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
-const Signup = () => {
-  const navigate = useNavigate()
-  const dispatch = useDispatch()
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
-  const [accountType, setAccountType] = useState("Student")
+import { setSignupData } from '../slices/authSlice';
+import { sendOtp } from '../services/operations/authAPI';
+
+import signupImg from '../assets/Images/signup.jpg';
+import frameImg from '../assets/Images/frameImg.png';
+
+const Signup = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [accountType, setAccountType] = useState("Student");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Updated state to match the Figma design (First & Last Name)
   const [formData, setFormData] = useState({
-    name: "", email: "", password: "", confirmPassword: "", contactNumber: ""
-  })
+    firstName: "", 
+    lastName: "", 
+    email: "", 
+    password: "", 
+    confirmPassword: "", 
+    contactNumber: ""
+  });
 
   const handleOnChange = (e) => {
     setFormData((prevData) => ({
       ...prevData,
       [e.target.name]: e.target.value,
-    }))
-  }
+    }));
+  };
 
   const handleOnSubmit = (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match")
-      return
+      alert("Passwords do not match");
+      return;
     }
-    const signupData = { ...formData, accountType }
-    console.log("Signup Data:", signupData)
+    
+    const signupData = { ...formData, accountType };
+    console.log("Signup Data:", signupData);
 
-    dispatch(setSignupData(signupData))
-    dispatch(sendOtp(formData.email, navigate))
-    // We will trigger the OTP step here later!
-  }
+    // Firing our Redux actions!
+    dispatch(setSignupData(signupData));
+    dispatch(sendOtp(formData.email, navigate));
+  };
 
   return (
-    <div className='flex w-11/12 max-w-maxContent mx-auto mt-12 justify-center items-center text-white mb-10'>
-      <div className='w-full max-w-[500px] p-8 border border-richblack-700 bg-richblack-800 rounded-lg shadow-sm shadow-blue-200'>
-        <h1 className='text-3xl font-semibold mb-2'>Join the Millions Learning to Code</h1>
-        <p className='text-[1.125rem] leading-[1.625rem] text-richblack-100 mb-6'>
-          Discover your passions, and be unstoppable.
+    <div className="mx-auto flex lg:w-5/6 w-11/12 max-w-maxContent flex-col-reverse justify-center gap-y-12 py-12 md:flex-row md:gap-y-0 gap-x-24 min-md:gap-x-36 min-h-[calc(100vh-3.5rem)] mt-10">
+      
+      {/* Left Column: Form Section */}
+      <div className="mx-auto w-11/12 max-w-[500px] md:mx-0 text-white">
+        <h1 className="text-[1.875rem] font-semibold leading-[2.375rem] text-richblack-5">
+          Join the millions learning to code with StudyNotion for free
+        </h1>
+        <p className="mt-4 text-[1.125rem] leading-[1.625rem]">
+          <span className="text-richblack-100">Build skills for today, tomorrow, and beyond.</span>{" "}
+          <span className="font-edu-sa font-bold italic text-blue-gradient">
+            Education to future-proof our career.
+          </span>
         </p>
 
-        {/* Tab for Student or Instructor */}
-        <div className='flex bg-richblack-900 p-1 gap-x-1 my-6 rounded-full max-w-max'>
-            <button onClick={() => setAccountType("Student")} className={`${accountType === "Student" ? "bg-richblack-800 text-richblack-5" : "bg-transparent text-richblack-200"} py-2 px-5 rounded-full transition-all duration-200`}>
-                Student
-            </button>
-            <button onClick={() => setAccountType("Instructor")} className={`${accountType === "Instructor" ? "bg-richblack-800 text-richblack-5" : "bg-transparent text-richblack-200"} py-2 px-5 rounded-full transition-all duration-200`}>
-                Instructor
-            </button>
+        {/* Tab Toggle for Student/Instructor */}
+        <div className="my-6 flex max-w-max gap-x-1 rounded-full bg-richblack-800 p-1">
+          <button
+            className={`${
+              accountType === "Student" 
+              ? "bg-richblack-900 text-richblack-5" 
+              : "bg-transparent text-richblack-200"
+            } rounded-full py-2 px-5 transition-all duration-200`}
+            onClick={() => setAccountType("Student")}
+          >
+            Student
+          </button>
+          <button
+            className={`${
+              accountType === "Instructor" 
+              ? "bg-richblack-900 text-richblack-5" 
+              : "bg-transparent text-richblack-200"
+            } rounded-full py-2 px-5 transition-all duration-200`}
+            onClick={() => setAccountType("Instructor")}
+          >
+            Instructors
+          </button>
         </div>
 
-        <form onSubmit={handleOnSubmit} className='flex flex-col gap-y-4'>
-          <label>
-            <p className='text-[0.875rem] text-richblack-5 mb-1'>Full Name <sup className='text-pink-200'>*</sup></p>
-            <input required type="text" name="name" value={formData.name} onChange={handleOnChange} placeholder="Enter full name" className='w-full rounded-[0.5rem] bg-richblack-900 p-[12px] text-richblack-5 border border-richblack-700 focus:outline-none focus:border-blue-400' />
-          </label>
-
-          <label>
-            <p className='text-[0.875rem] text-richblack-5 mb-1'>Email Address <sup className='text-pink-200'>*</sup></p>
-            <input required type="email" name="email" value={formData.email} onChange={handleOnChange} placeholder="Enter email address" className='w-full rounded-[0.5rem] bg-richblack-900 p-[12px] text-richblack-5 border border-richblack-700 focus:outline-none focus:border-blue-400' />
-          </label>
-
-          <label>
-            <p className='text-[0.875rem] text-richblack-5 mb-1'>Contact Number <sup className='text-pink-200'>*</sup></p>
-            <input required type="text" name="contactNumber" value={formData.contactNumber} onChange={handleOnChange} placeholder="Enter contact number" className='w-full rounded-[0.5rem] bg-richblack-900 p-[12px] text-richblack-5 border border-richblack-700 focus:outline-none focus:border-blue-400' />
-          </label>
-
-          <div className='flex gap-x-4'>
-            <label className='w-full'>
-                <p className='text-[0.875rem] text-richblack-5 mb-1'>Create Password <sup className='text-pink-200'>*</sup></p>
-                <input required type="password" name="password" value={formData.password} onChange={handleOnChange} placeholder="Enter Password" className='w-full rounded-[0.5rem] bg-richblack-900 p-[12px] text-richblack-5 border border-richblack-700 focus:outline-none focus:border-blue-400' />
+        {/* Signup Form */}
+        <form onSubmit={handleOnSubmit} className="flex w-full flex-col gap-y-4">
+          
+          {/* First Name & Last Name */}
+          <div className="flex flex-col md:flex-row gap-4">
+            <label className="w-full">
+              <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-richblack-5">
+                First Name <sup className="text-red-400">*</sup>
+              </p>
+              <input
+                required
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleOnChange}
+                placeholder="Enter first name"
+                className="w-full border-b-2 border-richblack-700 rounded-[0.5rem] bg-richblack-800 p-[12px] text-richblack-5 shadow-[0_1px_0_0_rgba(255,255,255,0.1)] outline-none focus:bg-richblack-700"
+              />
             </label>
-            <label className='w-full'>
-                <p className='text-[0.875rem] text-richblack-5 mb-1'>Confirm Password <sup className='text-pink-200'>*</sup></p>
-                <input required type="password" name="confirmPassword" value={formData.confirmPassword} onChange={handleOnChange} placeholder="Confirm Password" className='w-full rounded-[0.5rem] bg-richblack-900 p-[12px] text-richblack-5 border border-richblack-700 focus:outline-none focus:border-blue-400' />
+            <label className="w-full">
+              <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-richblack-5">
+                Last Name <sup className="text-red-400">*</sup>
+              </p>
+              <input
+                required
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleOnChange}
+                placeholder="Enter last name"
+                className="w-full border-b-2 border-richblack-700 rounded-[0.5rem] bg-richblack-800 p-[12px] text-richblack-5 shadow-[0_1px_0_0_rgba(255,255,255,0.1)] outline-none focus:bg-richblack-700"
+              />
             </label>
           </div>
 
-          <button type="submit" className='mt-6 rounded-[8px] bg-yellow-400 py-[8px] px-[12px] font-medium text-richblack-900 hover:scale-95 transition-all duration-200'>
+          {/* Email */}
+          <label className="w-full">
+            <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-richblack-5">
+              Email Address <sup className="text-red-400">*</sup>
+            </p>
+            <input
+              required
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleOnChange}
+              placeholder="Enter email address"
+              className="w-full border-b-2 border-richblack-700 rounded-[0.5rem] bg-richblack-800 p-[12px] text-richblack-5 shadow-[0_1px_0_0_rgba(255,255,255,0.1)] outline-none focus:bg-richblack-700"
+            />
+          </label>
+
+          {/* Phone Number */}
+          <label className="w-full">
+            <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-richblack-5">
+              Phone Number <sup className="text-red-400">*</sup>
+            </p>
+            <div className="flex gap-4">
+              <select
+                name="countrycode"
+                className="w-[80px] border-b-2 border-richblack-700 rounded-[0.5rem] bg-richblack-800 p-[12px] text-richblack-5 shadow-[0_1px_0_0_rgba(255,255,255,0.1)] outline-none focus:bg-richblack-700"
+              >
+                <option value="+91">+91</option>
+                <option value="+1">+1</option>
+                <option value="+44">+44</option>
+              </select>
+              <input
+                required
+                type="number"
+                name="contactNumber"
+                value={formData.contactNumber}
+                onChange={handleOnChange}
+                placeholder="12345 67890"
+                className="w-full border-b-2 border-richblack-700 rounded-[0.5rem] bg-richblack-800 p-[12px] text-richblack-5 shadow-[0_1px_0_0_rgba(255,255,255,0.1)] outline-none focus:bg-richblack-700"
+              />
+            </div>
+          </label>
+
+          {/* Passwords */}
+          <div className="flex flex-col md:flex-row gap-4">
+            <label className="relative w-full">
+              <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-richblack-5">
+                Create Password <sup className="text-red-400">*</sup>
+              </p>
+              <input
+                required
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                onChange={handleOnChange}
+                placeholder="Enter Password"
+                className="w-full border-b-2 border-richblack-700 rounded-[0.5rem] bg-richblack-800 p-[12px] pr-10 text-richblack-5 shadow-[0_1px_0_0_rgba(255,255,255,0.1)] outline-none focus:bg-richblack-700"
+              />
+              <span
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="absolute right-3 top-[38px] z-[10] cursor-pointer"
+              >
+                {showPassword ? (
+                  <AiOutlineEyeInvisible fontSize={24} fill="#AFB2BF" />
+                ) : (
+                  <AiOutlineEye fontSize={24} fill="#AFB2BF" />
+                )}
+              </span>
+            </label>
+            
+            <label className="relative w-full">
+              <p className="mb-1 text-[0.875rem]  leading-[1.375rem] text-richblack-5">
+                Confirm Password <sup className="text-red-400">*</sup>
+              </p>
+              <input
+                required
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleOnChange}
+                placeholder="Confirm Password"
+                className="w-full border-b-2 border-richblack-700 rounded-[0.5rem] bg-richblack-800 p-[12px] pr-10 text-richblack-5 shadow-[0_1px_0_0_rgba(255,255,255,0.1)] outline-none focus:bg-richblack-700"
+              />
+              <span
+                onClick={() => setShowConfirmPassword((prev) => !prev)}
+                className="absolute right-3 top-[38px] z-[10] cursor-pointer"
+              >
+                {showConfirmPassword ? (
+                  <AiOutlineEyeInvisible fontSize={24} fill="#AFB2BF" />
+                ) : (
+                  <AiOutlineEye fontSize={24} fill="#AFB2BF" />
+                )}
+              </span>
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            className="mt-6 btn-grad w-full"
+          >
             Create Account
           </button>
         </form>
       </div>
-    </div>
-  )
-}
 
-export default Signup
+      {/* Right Column: Image with Pattern Background */}
+      <div className="relative mx-auto w-11/12 max-w-[450px] md:mx-0">
+        <img
+            src={frameImg}
+            alt="Pattern"
+            width={558}
+            height={504}
+            loading="lazy"
+            className="w-full aspect-square z-0 absolute top-4 left-4"
+        />
+        <img
+            src={signupImg}
+            alt="Students"
+            width={558}
+            height={504}
+            loading="lazy"
+            className="relative aspect-square z-10 w-full object-cover"
+        />
+      </div>
+      
+    </div>
+  );
+};
+
+export default Signup;

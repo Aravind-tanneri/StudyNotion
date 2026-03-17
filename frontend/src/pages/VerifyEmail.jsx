@@ -3,25 +3,32 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate, Link } from 'react-router-dom'
 import OtpInput from 'react-otp-input'
 import { sendOtp, signUp } from '../services/operations/authAPI'
-import { FaArrowLeft } from 'react-icons/fa'
+import { BiArrowBack } from 'react-icons/bi'
+import { RxCountdownTimer } from 'react-icons/rx'
 
 const VerifyEmail = () => {
     const [otp, setOtp] = useState("")
     const dispatch = useDispatch()
     const navigate = useNavigate()
+    
     const { signupData, loading } = useSelector((state) => state.auth)
 
-    // If a user tries to jump straight to /verify-email without filling the signup form, kick them back
+    // Route protection: If there is no signup data, send back to signup
     useEffect(() => {
         if (!signupData) {
             navigate("/signup")
         }
-    }, [])
+    }, [navigate, signupData])
 
     const handleOnSubmit = (e) => {
         e.preventDefault()
-        const { accountType, name, email, password, confirmPassword, contactNumber } = signupData
-        dispatch(signUp(accountType, name, email, password, confirmPassword, contactNumber, otp, navigate))
+        
+        // Updated destructuring to match our new Signup form fields (firstName, lastName)
+        const { accountType, firstName, lastName, email, password, confirmPassword, contactNumber } = signupData
+        
+        dispatch(
+            signUp(accountType, firstName, lastName, email, password, confirmPassword, contactNumber, otp, navigate)
+        )
     }
 
     return (
@@ -31,11 +38,12 @@ const VerifyEmail = () => {
             ) : (
                 <div className='max-w-[500px] p-4 lg:p-8 text-white'>
                     <h1 className='text-richblack-5 font-semibold text-[1.875rem] leading-[2.375rem]'>
-                        Verify Email
+                        Verify email
                     </h1>
                     <p className='text-[1.125rem] leading-[1.625rem] my-4 text-richblack-100'>
-                        A verification code has been sent to you. Enter the code below.
+                        A verification code has been sent to us. Enter the code below
                     </p>
+                    
                     <form onSubmit={handleOnSubmit}>
                         <OtpInput
                             value={otp}
@@ -56,22 +64,25 @@ const VerifyEmail = () => {
                                 gap: "0 6px",
                             }}
                         />
-                        <button type="submit" className='w-full bg-yellow-400 py-[12px] px-[12px] rounded-[8px] mt-6 font-medium text-richblack-900'>
-                            Verify Email
+                        <button 
+                            type="submit" 
+                            className='w-full bg-yellow-50 py-[12px] px-[12px] rounded-[8px] mt-6 font-medium text-richblack-900 transition-all duration-200 hover:scale-95'
+                        >
+                            Verify email
                         </button>
                     </form>
 
                     <div className='mt-6 flex items-center justify-between'>
-                        <Link to="/signup">
-                            <p className='text-richblack-5 flex items-center gap-x-2'>
-                                <FaArrowLeft /> Back To Signup
+                        <Link to="/login">
+                            <p className='text-richblack-5 flex items-center gap-x-2 hover:underline'>
+                                <BiArrowBack /> Back to login
                             </p>
                         </Link>
                         <button 
-                            className='flex items-center text-blue-100 gap-x-2'
+                            className='flex items-center text-blue-100 gap-x-2 hover:underline'
                             onClick={() => dispatch(sendOtp(signupData.email, navigate))}
                         >
-                            Resend it
+                            <RxCountdownTimer className="text-[20px]" /> Resend it
                         </button>
                     </div>
                 </div>

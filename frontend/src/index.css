@@ -1,10 +1,56 @@
-@import "tailwindcss";
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
 @theme {
+  --font-inter: "Inter", ui-sans-serif, system-ui;
+
+  --color-caribbeangreen-5: #E7FFF8;
+  --color-caribbeangreen-25: #00FF70;
+  --color-caribbeangreen-50: #05FFD2;
+  --color-caribbeangreen-100: #00F5D4;
+  --color-caribbeangreen-200: #00D1B2;
+  --color-caribbeangreen-300: #06D6A0;
+  --color-caribbeangreen-400: #01D293;
+  --color-caribbeangreen-500: #01A47F;
+  --color-caribbeangreen-600: #018A6D;
+  --color-caribbeangreen-700: #017452;
+  --color-caribbeangreen-800: #015942;
+  --color-caribbeangreen-900: #014A32;
+
+  --color-richblack-5: #F1F2FF;
+  --color-richblack-25: #DBDDEA;
+  --color-richblack-50: #C5C7D4;
+  --color-richblack-100: #AFB2BF;
+  --color-richblack-200: #999DAA;
+  --color-richblack-300: #838894;
+  --color-richblack-400: #6D727F;
+  --color-richblack-500: #585D69;
+  --color-richblack-600: #424854;
+  --color-richblack-700: #2C333F;
+  --color-richblack-800: #161D29;
   --color-richblack-900: #000814;
-  --color-richblack-800: #000c1d;
+
+  --color-yellow-5: #FFF9E6;
+  --color-yellow-25: #FFF2CC;
   --color-yellow-50: #FFD60A;
+  --color-yellow-100: #F1C40F;
+  --color-yellow-200: #D4AC0D;
+  --color-yellow-300: #B7950B;
+  --color-yellow-400: #9A7D0A;
+  --color-yellow-500: #7D6608;
+  --color-yellow-600: #614E06;
+  --color-yellow-700: #443704;
+  --color-yellow-800: #282003;
+  --color-yellow-900: #0B0B01;
+
   --color-pure-greys-5: #F1F2FF;
+
+  --color-code-yellow: #D4AC0D;  /* For <!DOCTYPE> and tags */
+  --color-code-white: #FFFFFF;   /* For plain text */
+  --color-code-pink: #FF69B4;    /* For attributes like href */
+  --color-code-coral: #FF7F50;   /* For strings and values */
+
+  --background-blue-gradient: linear-gradient(170.19deg, #1FA2FF -3.62%, #12D8FA 50.44%, #A6FFCB 104.51%);
 
   --font-inter: "Inter", sans-serif;
   --font-edu-sa: "Edu SA Beginner", cursive;
@@ -14,4 +60,74 @@
   --radius-custom: 12px;
 
   --shadow-blue: 0px 4px 14px rgba(0, 118, 255, 0.39);
+}
+
+
+@utility text-blue-gradient {
+  background: var(--background-blue-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility section-center {
+  margin-left: auto;
+  margin-right: auto;
+  width: 91.666667%; /* w-11/12 */
+  max-width: 1260px; /* max-w-maxContent */
+}
+
+/* --- CUSTOM CTA BUTTONS --- */
+
+/* The Active Gradient Button (Your Custom CSS) */
+.btn-grad {
+  background-image: linear-gradient(to right, #F09819 0%, #EDDE5D 51%, #F09819 100%);
+  padding: 12px 24px; /* Adjusted to match StudyNotion standard */
+  text-align: center;
+  text-transform: capitalize;
+  transition: 0.5s;
+  background-size: 200% auto;
+  box-shadow: 0 0 15px rgba(240, 152, 25, 0.4); /* Made the glow match the orange */
+  border-radius: 8px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color:white;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+
+
+.btn-grad:hover {
+  background-position: right center;
+  text-decoration: none;
+  transform: scale(0.95); /* Kept the StudyNotion click effect */
+}
+
+/* The Inactive Dark Button */
+.btn-dark {
+  background-color: #161D29; /* richblack-800 */
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: 0.2s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset -1px -1px 0px rgba(255, 255, 255, 0.18);
+}
+
+.btn-dark:hover {
+  transform: scale(0.95);
+}
+
+
+.homepage_bg {
+    background: url("./assets/home/bgHome.png");
+    height: 320px;
 }

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux"
 import { AiOutlineMenu, AiOutlineShoppingCart } from "react-icons/ai"
 import { BsChevronDown } from "react-icons/bs"
 
-import logo from "../../assets/Logo/Logo-Full-Light.png"
+import logo from "../../assets/Images/logo.png"
 import { NavbarLinks } from "../../data/navbar-links"
 import { apiConnector } from "../../services/apiconnector"
 import { categories } from "../../services/apis"
@@ -41,7 +41,7 @@ export default function Navbar() {
   }
 
   return (
-    <div className="flex h-14 items-center justify-center border-b-[1px] border-b-richblack-700 bg-richblack-800 transition-all duration-200">
+    <div className={`flex min-lg:px-[5%] h-14 items-center justify-center border-b-[1px] border-b-richblack-700 bg-richblack-900 transition-all duration-200`}>
       <div className="flex w-11/12 max-w-maxContent items-center justify-between">
         
         {/* We link our logo back to the home page */}
@@ -51,7 +51,7 @@ export default function Navbar() {
 
         {/* We map through our navigation links */}
         <nav className="hidden md:block">
-          <ul className="flex gap-x-6 text-richblack-25">
+          <ul className="flex gap-x-8 text-richblack-25">
             {NavbarLinks.map((link, index) => (
               <li key={index}>
                 {link.title === "Catalog" ? (
@@ -86,7 +86,7 @@ export default function Navbar() {
                   </div>
                 ) : (
                   <Link to={link?.path}>
-                    <p className={`${matchRoute(link?.path) ? "text-yellow-25" : "text-richblack-25"}`}>
+                    <p className={`${matchRoute(link?.path) ? "text-yellow-50" : "text-richblack-25"}`}>
                       {link.title}
                     </p>
                   </Link>

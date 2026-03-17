@@ -14,7 +14,7 @@ export default function ProfileDropdown() {
 
   // Logic to handle logout (assumes an auth service exists)
   const handleLogout = () => {
-    // dispatch(logout(navigate))
+    dispatch(logout(navigate))
     setOpen(false);
   };
 

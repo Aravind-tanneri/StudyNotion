@@ -1,8 +1,9 @@
 import React from "react"
 import { FooterLink2 } from "../../data/footer-links"
 import { Link } from "react-router-dom"
-import Logo from "../../assets/Logo/Logo-Full-Light.png"
+import Logo from "../../assets/Images/logo.png"
 import { FaFacebook, FaGoogle, FaTwitter, FaYoutube } from "react-icons/fa"
+import {toast} from "react-hot-toast"
 
 // We create our static arrays for the left side of the footer
 const BottomFooter = ["Privacy Policy", "Cookie Policy", "Terms"]
@@ -20,9 +21,19 @@ const Plans = ["Paid memberships", "For students", "Business solutions"]
 const Community = ["Forums", "Chapters", "Events"]
 
 export default function Footer() {
+  const handleComingSoon = (e) => {
+    e.preventDefault();
+    toast.error("Page Under Construction. \nComing Soon!", {
+        style: {
+            borderRadius: '10px',
+            background: '#0e0e25',
+            color: '#fff',
+        },
+    });
+  }
   return (
     <div className="bg-richblack-800">
-      <div className="flex lg:flex-row gap-8 items-center justify-between w-11/12 max-w-maxContent text-richblack-400 leading-6 mx-auto relative py-14">
+      <div className="flex px-[5%] lg:flex-row gap-8 items-center justify-between w-11/12 max-w-maxContent text-richblack-400 leading-6 mx-auto relative py-14">
         <div className="border-b w-[100%] flex flex-col lg:flex-row pb-5 border-richblack-700">
           
           {/* We build the Left Section of our Footer */}
@@ -39,7 +50,7 @@ export default function Footer() {
                       key={i}
                       className="text-[14px] cursor-pointer hover:text-richblack-50 transition-all duration-200"
                     >
-                      <Link to={ele.toLowerCase()}>{ele}</Link>
+                      <Link to={ele.toLowerCase()}  onClick={handleComingSoon}>{ele}</Link>
                     </div>
                   )
                 })}
@@ -65,7 +76,7 @@ export default function Footer() {
                       key={index}
                       className="text-[14px] cursor-pointer hover:text-richblack-50 transition-all duration-200"
                     >
-                      <Link to={ele.split(" ").join("-").toLowerCase()}>
+                      <Link to={ele.split(" ").join("-").toLowerCase()}  onClick={handleComingSoon}>
                         {ele}
                       </Link>
                     </div>
@@ -76,7 +87,7 @@ export default function Footer() {
                 Support
               </h1>
               <div className="text-[14px] cursor-pointer hover:text-richblack-50 transition-all duration-200 mt-2">
-                <Link to={"/help-center"}>Help Center</Link>
+                <Link to={"/help-center"} onClick={handleComingSoon}>Help Center</Link>
               </div>
             </div>
 
@@ -91,7 +102,7 @@ export default function Footer() {
                       key={index}
                       className="text-[14px] cursor-pointer hover:text-richblack-50 transition-all duration-200"
                     >
-                      <Link to={ele.split(" ").join("-").toLowerCase()}>
+                      <Link to={ele.split(" ").join("-").toLowerCase()}  onClick={handleComingSoon}>
                         {ele}
                       </Link>
                     </div>
@@ -108,7 +119,7 @@ export default function Footer() {
                       key={index}
                       className="text-[14px] cursor-pointer hover:text-richblack-50 transition-all duration-200"
                     >
-                      <Link to={ele.split(" ").join("-").toLowerCase()}>
+                      <Link to={ele.split(" ").join("-").toLowerCase()}  onClick={handleComingSoon}>
                         {ele}
                       </Link>
                     </div>
@@ -133,7 +144,7 @@ export default function Footer() {
                           key={index}
                           className="text-[14px] cursor-pointer hover:text-richblack-50 transition-all duration-200"
                         >
-                          <Link to={link.link}>{link.title}</Link>
+                          <Link to={link.link} onClick={handleComingSoon}>{link.title}</Link>
                         </div>
                       )
                     })}
@@ -159,7 +170,7 @@ export default function Footer() {
                       : "border-r border-richblack-700 cursor-pointer hover:text-richblack-50 transition-all duration-200"
                   } px-3 `}
                 >
-                  <Link to={ele.split(" ").join("-").toLowerCase()}>
+                  <Link to={ele.split(" ").join("-").toLowerCase()} onClick={handleComingSoon}>
                     {ele}
                   </Link>
                 </div>
