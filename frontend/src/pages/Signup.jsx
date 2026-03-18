@@ -55,12 +55,12 @@ const Signup = () => {
       {/* Left Column: Form Section */}
       <div className="mx-auto w-11/12 max-w-[500px] md:mx-0 text-white">
         <h1 className="text-[1.875rem] font-semibold leading-[2.375rem] text-richblack-5">
-          Join the millions learning to code with StudyNotion for free
+          Welcome Back
         </h1>
         <p className="mt-4 text-[1.125rem] leading-[1.625rem]">
-          <span className="text-richblack-100">Build skills for today, tomorrow, and beyond.</span>{" "}
+          <span className="text-richblack-100">Discover your passions,</span>{" "}
           <span className="font-edu-sa font-bold italic text-blue-gradient">
-            Education to future-proof our career.
+            Be Unstoppable
           </span>
         </p>
 
@@ -155,7 +155,9 @@ const Signup = () => {
               </select>
               <input
                 required
-                type="number"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 name="contactNumber"
                 value={formData.contactNumber}
                 onChange={handleOnChange}

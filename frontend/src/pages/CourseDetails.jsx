@@ -8,9 +8,10 @@ import { toast } from "react-hot-toast"
 
 import { BiInfoCircle } from 'react-icons/bi'
 import { HiOutlineGlobeAlt } from 'react-icons/hi'
-import { FaStar } from 'react-icons/fa'
 import { MdOutlineArrowForwardIos } from 'react-icons/md'
 import CourseBuyCard from '../components/core/Catalog/CourseBuyCard'
+import RatingStars from "../components/common/RatingStars"
+import { getAverageRating, getRatingCount } from "../utils/ratings"
 
 export default function CourseDetails() {
     const { user } = useSelector((state) => state.profile)
@@ -24,6 +25,9 @@ export default function CourseDetails() {
 
     const [courseData, setCourseData] = useState(null)
     const [activeSections, setActiveSections] = useState([])
+
+    const avgRating = getAverageRating(courseData?.ratingAndReviews)
+    const ratingCount = getRatingCount(courseData?.ratingAndReviews)
 
     // 1. Fetch the course data exactly like your old file
     useEffect(() => {
@@ -98,16 +102,14 @@ export default function CourseDetails() {
                         </p>
                         
                         <div className="flex flex-wrap items-center gap-2 text-md">
-                            <span className="text-yellow-50 font-bold">4.5</span>
-                            <div className="flex text-yellow-50">
-                                <FaStar /><FaStar /><FaStar /><FaStar /><FaStar />
-                            </div>
-                            <span className="text-richblack-25">({courseData?.ratingAndReviews?.length || 0} ratings)</span>
+                            <span className="text-yellow-50 font-bold">{avgRating.toFixed(1)}</span>
+                            <RatingStars value={avgRating} size={18} />
+                            <span className="text-richblack-25">({ratingCount} ratings)</span>
                             <span className="text-richblack-25 ml-2">{courseData?.studentsEnrolled?.length || 0} students</span>
                         </div>
 
                         <p className="text-richblack-25">
-                            Created by {courseData?.instructor?.firstName} {courseData?.instructor?.lastName}
+                            Created by {courseData?.instructor?.name || "Instructor"}
                         </p>
                         <div className="flex flex-wrap gap-5 text-lg text-richblack-25">
                             <p className="flex items-center gap-2">
@@ -202,7 +204,7 @@ export default function CourseDetails() {
                                 className="h-14 w-14 rounded-full object-cover" 
                             />
                             <p className="text-lg font-medium text-richblack-5">
-                                {courseData?.instructor?.firstName} {courseData?.instructor?.lastName}
+                                {courseData?.instructor?.name || "Instructor"}
                             </p>
                         </div>
                         <p className="text-richblack-50 text-sm mt-2 leading-relaxed">

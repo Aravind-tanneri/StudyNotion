@@ -25,7 +25,7 @@ export default function ProfileDropdown() {
       <div className="flex items-center gap-x-1">
         <img
           src={user?.image}
-          alt={`profile-${user?.firstName}`}
+          alt={`profile-${user?.name || "user"}`}
           className="aspect-square w-[30px] rounded-full object-cover"
         />
         <AiOutlineCaretDown className="text-sm text-slate-400" />

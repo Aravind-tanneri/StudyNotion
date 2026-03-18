@@ -54,6 +54,14 @@ const userSchema = new mongoose.Schema({
             ref: "CourseProgress",
         }
     ],
+
+    // Password reset
+    resetPasswordToken: {
+        type: String,
+    },
+    resetPasswordExpires: {
+        type: Date,
+    },
 }, { timestamps: true });
 
 module.exports = mongoose.model("User", userSchema);

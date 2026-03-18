@@ -1,6 +1,6 @@
 import { toast } from "react-hot-toast"
 import { apiConnector } from "../apiconnector"
-import { catalogData } from "../apis"
+import { catalogData, courseEndpoints } from "../apis"
 
 // We fetch all the courses associated with a specific category ID
 export const getCategoryPageDetails = async (categoryId) => {
@@ -29,4 +29,19 @@ export const getCategoryPageDetails = async (categoryId) => {
   
   toast.dismiss(toastId)
   return result
+}
+
+// Fetch all ratings/reviews for homepage slider
+export const getAllRatings = async () => {
+  try {
+    const response = await apiConnector("GET", courseEndpoints.GET_ALL_RATING_API)
+    if (!response?.data?.success) {
+      throw new Error(response?.data?.message || "Could not fetch ratings")
+    }
+    return response?.data?.data || []
+  } catch (error) {
+    console.log("GET_ALL_RATING_API ERROR....", error)
+    toast.error(error?.response?.data?.message || "Could not fetch ratings")
+    return []
+  }
 }

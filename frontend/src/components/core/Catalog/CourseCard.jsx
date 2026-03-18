@@ -1,8 +1,17 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { FaStar } from 'react-icons/fa'
+import RatingStars from "../../common/RatingStars"
+import { getAverageRating, getRatingCount } from "../../../utils/ratings"
 
 const CourseCard = ({ course, Height }) => {
+  const instructorName =
+    course?.instructor?.name ||
+    `${course?.instructor?.firstName || ""} ${course?.instructor?.lastName || ""}`.trim() ||
+    "Instructor"
+
+  const avgRating = getAverageRating(course?.ratingAndReviews)
+  const ratingCount = getRatingCount(course?.ratingAndReviews)
+
   return (
     <>
       <Link to={`/courses/${course._id}`}>
@@ -29,22 +38,15 @@ const CourseCard = ({ course, Height }) => {
               {course?.courseName}
             </p>
             <p className="text-sm text-richblack-300">
-              {course?.instructor?.firstName} {course?.instructor?.lastName}
+              {instructorName}
             </p>
             
             {/* Rating Section */}
             <div className="flex items-center gap-2">
-              <span className="text-yellow-50">{course?.ratingAndReviews?.length || 4.5}</span>
-              <div className="flex text-yellow-50 text-sm">
-                {/* Hardcoded 5 stars for now, we can make this dynamic later with a rating component */}
-                <FaStar />
-                <FaStar />
-                <FaStar />
-                <FaStar />
-                <FaStar />
-              </div>
+              <span className="text-yellow-50">{avgRating.toFixed(1)}</span>
+              <RatingStars value={avgRating} size={14} />
               <span className="text-richblack-400 text-sm">
-                ({course?.ratingAndReviews?.length || 0} Review Count)
+                ({ratingCount} ratings)
               </span>
             </div>
             

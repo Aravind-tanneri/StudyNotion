@@ -8,7 +8,7 @@ import { getCategoryPageDetails } from "../services/operations/pageAndComponentD
 
 // Component Imports
 import CourseSlider from "../components/core/Catalog/CourseSlider"
-import Course_Card from "../components/core/Catalog/CourseCard"
+import CourseCard from "../components/core/Catalog/CourseCard"
 
 const Catalog = () => {
   const { catalogName } = useParams()
@@ -16,6 +16,7 @@ const Catalog = () => {
   const [catalogPageData, setCatalogPageData] = useState(null)
   const [categoryId, setCategoryId] = useState("")
   const [activeTab, setActiveTab] = useState(1) // State for Most Popular / New / Trending tabs
+  const [tabCourses, setTabCourses] = useState([])
 
   // 1. Fetch all categories to find the ID that matches our URL slug
   useEffect(() => {
@@ -50,6 +51,35 @@ const Catalog = () => {
       getCategoryDetails()
     }
   }, [categoryId])
+
+  // 3. Update tab course list whenever data/tab changes
+  useEffect(() => {
+    const courses = catalogPageData?.data?.selectedCategory?.courses || []
+    let sorted = [...courses]
+
+    if (activeTab === 1) {
+      // Most popular: by enrollments desc
+      sorted.sort(
+        (a, b) =>
+          (b?.studentsEnrolled?.length || 0) - (a?.studentsEnrolled?.length || 0)
+      )
+    } else if (activeTab === 2) {
+      // New: by createdAt desc
+      sorted.sort(
+        (a, b) => new Date(b?.createdAt || 0) - new Date(a?.createdAt || 0)
+      )
+    } else if (activeTab === 3) {
+      // Trending: by rating count desc (fallback to enrollments)
+      sorted.sort((a, b) => {
+        const ar = a?.ratingAndReviews?.length || 0
+        const br = b?.ratingAndReviews?.length || 0
+        if (br !== ar) return br - ar
+        return (b?.studentsEnrolled?.length || 0) - (a?.studentsEnrolled?.length || 0)
+      })
+    }
+
+    setTabCourses(sorted)
+  }, [catalogPageData, activeTab])
 
   // Loading State
   if (!catalogPageData) {
@@ -121,7 +151,7 @@ const Catalog = () => {
                     </p>
                 </div>
                 {/* Slider for Selected Category */}
-                <CourseSlider Courses={catalogPageData?.data?.selectedCategory?.courses} />
+                <CourseSlider Courses={tabCourses} />
             </div>
 
             {/* Section 2: Top courses in [Category Name] (Using Different Category data) */}
@@ -139,7 +169,7 @@ const Catalog = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                     {/* We use slice(0, 4) to ensure we only show a maximum of 4 cards in this grid */}
                     {catalogPageData?.data?.mostSellingCourses?.slice(0, 4).map((course, index) => (
-                        <Course_Card course={course} key={index} Height={"h-[300px]"} />
+                        <CourseCard course={course} key={index} Height={"h-[300px]"} />
                     ))}
                 </div>
             </div>

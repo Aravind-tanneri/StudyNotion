@@ -4,6 +4,7 @@ const User = require("../models/User");
 const mongoose = require("mongoose");
 const crypto = require("crypto");
 const mailSender = require("../utils/mailSender");
+const { courseRegistrationEmail } = require("../mail/templates/courseRegistrationEmail");
 
 // 1. Capture Payment for Multiple Courses
 exports.capturePayment = async (req, res) => {
@@ -117,15 +118,17 @@ exports.verifySignature = async (req, res) => {
 
                 // 3. Send an email receipt for each course
                 try {
+                    const dashboardUrl =
+                        (process.env.FRONTEND_URL || "http://localhost:5173") +
+                        "/dashboard/enrolled-courses";
                     const emailResponse = await mailSender(
                         enrolledStudent.email,
                         `Payment Successful - Welcome to ${enrolledCourse.courseName}!`,
-                        `
-                        <h1>Congratulations! 🎉</h1>
-                        <p>Dear ${enrolledStudent.firstName},</p>
-                        <p>Your payment was verified successfully. You are now officially enrolled in <b>${enrolledCourse.courseName}</b>.</p>
-                        <p>Log in to your dashboard to start learning right away!</p>
-                        `
+                        courseRegistrationEmail({
+                            name: enrolledStudent?.name,
+                            courseName: enrolledCourse?.courseName,
+                            dashboardUrl,
+                        })
                     );
                     console.log("Confirmation Email Sent:", emailResponse.response);
                 } catch (emailError) {

@@ -1,7 +1,8 @@
-import { FaStar } from "react-icons/fa"
 import { RiDeleteBin6Line } from "react-icons/ri"
 import { useDispatch, useSelector } from "react-redux"
 import { removeFromCart } from "../../../../slices/cartSlice"
+import RatingStars from "../../../common/RatingStars"
+import { getAverageRating, getRatingCount } from "../../../../utils/ratings"
 
 export default function RenderCartCourses() {
   // Grab the cart array from global state
@@ -32,12 +33,14 @@ export default function RenderCartCourses() {
                 {course?.category?.name}
               </p>
               
-              {/* Ratings Section (Hardcoded 4.5 for now, dynamic later) */}
+              {/* Ratings Section */}
               <div className="flex items-center gap-2">
-                <span className="text-yellow-5">4.5</span>
-                <FaStar className="text-yellow-5" />
+                <span className="text-yellow-5">
+                  {getAverageRating(course?.ratingAndReviews).toFixed(1)}
+                </span>
+                <RatingStars value={getAverageRating(course?.ratingAndReviews)} />
                 <span className="text-richblack-400">
-                  ({course?.ratingAndReviews?.length || 0} Ratings)
+                  ({getRatingCount(course?.ratingAndReviews)} Ratings)
                 </span>
               </div>
             </div>

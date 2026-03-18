@@ -3,8 +3,8 @@ import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import { IoAddCircleOutline } from "react-icons/io5"
 import { useDispatch, useSelector } from "react-redux"
-import { setCourse, setEditCourse, setStep } from "../../../../slices/courseSlice"
-import { createSection, updateSection } from "../../../../services/operations/courseDetailsAPI"
+import { setCourse, setEditCourse, setStep } from "../../../../../slices/courseSlice"
+import { createSection, updateSection } from "../../../../../services/operations/courseDetailsAPI"
 import NestedView from "./NestedView"
 
 export default function CourseBuilderForm() {

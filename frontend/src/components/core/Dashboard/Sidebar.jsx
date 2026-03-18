@@ -8,15 +8,22 @@ import { logout } from '../../../services/operations/authAPI'
 import SidebarLink from './SidebarLink'
 import ConfirmationModal from '../../common/ConfirmationModal'
 
-// Hardcoding the links here for you, but usually, this comes from a separate data file!
-const sidebarLinks = [
-  { id: 1, name: "My Profile", path: "/dashboard/my-profile", icon: "VscAccount" },
-  { id: 2, name: "Dashboard", path: "/dashboard/instructor", type: "Instructor", icon: "VscDashboard" },
-  { id: 3, name: "My Courses", path: "/dashboard/my-courses", type: "Instructor", icon: "VscVm" },
-  { id: 4, name: "Add Course", path: "/dashboard/add-course", type: "Instructor", icon: "VscAdd" },
-  { id: 5, name: "Enrolled Courses", path: "/dashboard/enrolled-courses", type: "Student", icon: "VscMortarBoard" },
-  { id: 6, name: "Cart", path: "/dashboard/cart", type: "Student", icon: "VscHistory" },
-]
+// Hardcoding the links here (grouped like the UI)
+const sidebarLinks = {
+  common: [
+    { id: 1, name: "Dashboard", path: "/dashboard/instructor", type: "Instructor", icon: "VscDashboard" },
+    { id: 2, name: "My Profile", path: "/dashboard/my-profile", icon: "VscAccount" },
+  ],
+  instructor: [
+    { id: 3, name: "My Courses", path: "/dashboard/my-courses", icon: "VscVm" },
+  ],
+  student: [
+    { id: 4, name: "Enrolled Courses", path: "/dashboard/enrolled-courses", icon: "VscMortarBoard" },
+    { id: 5, name: "Wishlist", path: "/dashboard/wishlist", icon: "VscHeart" },
+    { id: 6, name: "Purchase History", path: "/dashboard/purchase-history", icon: "VscHistory" },
+    { id: 7, name: "Courses", path: "/dashboard/courses", icon: "VscBook" },
+  ],
+}
 
 const Sidebar = () => {
   const { user, loading: profileLoading } = useSelector((state) => state.profile)
@@ -40,13 +47,34 @@ const Sidebar = () => {
       <div className='flex min-w-[222px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800 py-10 h-[calc(100vh-3.5rem)]'>
         <div className='flex flex-col'>
           
-          {/* Dynamic Links based on Account Type */}
-          {sidebarLinks.map((link) => {
-            if (link.type && user?.accountType !== link.type) return null
-            return (
+          {/* Top Links */}
+          {sidebarLinks.common
+            .filter((link) => !link.type || link.type === user?.accountType)
+            .map((link) => (
               <SidebarLink key={link.id} link={link} iconName={link.icon} />
-            )
-          })}
+            ))}
+
+          {user?.accountType === "Instructor" && (
+            <>
+              <p className="px-8 pt-6 pb-2 text-xs font-semibold uppercase tracking-wider text-richblack-300">
+                Instructor
+              </p>
+              {sidebarLinks.instructor.map((link) => (
+                <SidebarLink key={link.id} link={link} iconName={link.icon} />
+              ))}
+            </>
+          )}
+
+          {user?.accountType === "Student" && (
+            <>
+              <p className="px-8 pt-6 pb-2 text-xs font-semibold uppercase tracking-wider text-richblack-300">
+                Student
+              </p>
+              {sidebarLinks.student.map((link) => (
+                <SidebarLink key={link.id} link={link} iconName={link.icon} />
+              ))}
+            </>
+          )}
 
           <div className='mx-auto mt-6 mb-6 h-[1px] w-10/12 bg-richblack-700'></div>
           

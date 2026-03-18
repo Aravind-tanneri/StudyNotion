@@ -148,6 +148,87 @@ export const updateSection = async (data, token) => {
   return result
 }
 
+export const deleteSection = async (data, token) => {
+  let result = null
+  const toastId = toast.loading("Deleting Section...")
+  try {
+    const response = await apiConnector(
+      "DELETE",
+      courseEndpoints.DELETE_SECTION_API,
+      data,
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    )
+    console.log("DELETE SECTION API RESPONSE............", response)
+    if (!response?.data?.success) {
+      throw new Error("Could Not Delete Section")
+    }
+    toast.success("Section Deleted Successfully")
+    result = response?.data?.data
+  } catch (error) {
+    console.log("DELETE SECTION API ERROR............", error)
+    toast.error(error.message)
+  }
+  toast.dismiss(toastId)
+  return result
+}
+
+export const deleteSubSection = async (data, token) => {
+  let result = null
+  const toastId = toast.loading("Deleting Sub Section...")
+  try {
+    const response = await apiConnector(
+      "DELETE",
+      courseEndpoints.DELETE_SUBSECTION_API,
+      data,
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    )
+    console.log("DELETE SUB SECTION API RESPONSE............", response)
+    if (!response?.data?.success) {
+      throw new Error("Could Not Delete Sub Section")
+    }
+    toast.success("Sub Section Deleted Successfully")
+    result = response?.data?.data
+  } catch (error) {
+    console.log("DELETE SUB SECTION API ERROR............", error)
+    toast.error(error.message)
+  }
+  toast.dismiss(toastId)
+  return result
+}
+
+// DELETE A SECTION
+export const deleteSectionVideo = async (data, token) => {
+  let result = null
+  const toastId = toast.loading("Deleting Section...")
+  try {
+    const response = await apiConnector(
+      "DELETE",
+      courseEndpoints.DELETE_SECTION_API,
+      data, 
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    )
+    console.log("DELETE SECTION API RESPONSE............", response)
+    if (!response?.data?.success) {
+      throw new Error("Could Not Delete Section")
+    }
+    toast.success("Section Deleted Successfully")
+    result = response?.data?.data
+  } catch (error) {
+    console.log("DELETE SECTION API ERROR............", error)
+    toast.error(error.message)
+  }
+  toast.dismiss(toastId)
+  return result
+}
+
+
+
 //create a Sub section(video lec)
 
 export const createSubSection=async (data,token)=>{

@@ -2,11 +2,15 @@ import ChangeProfilePicture from "./ChangeProfilePicture"
 import EditProfile from "./EditProfile"
 import UpdatePassword from "./UpdatePassword"
 import DeleteAccount from "./DeleteAccount"
+import { Link } from "react-router-dom"
 
 export default function Settings() {
   return (
     <div className="w-full text-white">
-      <h1 className="mb-14 text-3xl font-medium text-richblack-5">
+      <Link to="/dashboard/my-profile" className="mb-3 inline-block text-sm text-richblack-300 hover:text-richblack-5">
+        &larr; Back
+      </Link>
+      <h1 className="mb-10 text-3xl font-medium text-richblack-5">
         Edit Profile
       </h1>
       

@@ -53,7 +53,9 @@ export default function CourseSlider({ Courses }) {
                 <div className="flex flex-col gap-1 px-1 py-3">
                   <p className="text-xl text-richblack-5">{course.courseName}</p>
                   <p className="text-sm text-richblack-50">
-                    {course?.instructor?.firstName} {course?.instructor?.lastName}
+                    {course?.instructor?.name ||
+                      `${course?.instructor?.firstName || ""} ${course?.instructor?.lastName || ""}`.trim() ||
+                      "Instructor"}
                   </p>
                   <p className="text-xl text-yellow-50">Rs. {course.price}</p>
                 </div>

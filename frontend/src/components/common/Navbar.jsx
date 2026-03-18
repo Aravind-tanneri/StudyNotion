@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import { Link, matchPath, useLocation } from "react-router-dom"
 import { useSelector } from "react-redux"
-import { AiOutlineMenu, AiOutlineShoppingCart } from "react-icons/ai"
+import { AiOutlineClose, AiOutlineMenu, AiOutlineShoppingCart } from "react-icons/ai"
 import { BsChevronDown } from "react-icons/bs"
 
 import logo from "../../assets/Images/logo.png"
@@ -18,6 +18,8 @@ export default function Navbar() {
 
   const [subLinks, setSubLinks] = useState([])
   const [loading, setLoading] = useState(false)
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isCatalogOpen, setIsCatalogOpen] = useState(false)
 
   useEffect(() => {
     // We fetch the dynamic catalog categories from our database
@@ -34,6 +36,22 @@ export default function Navbar() {
     }
     fetchCategories()
   }, [])
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMenuOpen(false)
+    setIsCatalogOpen(false)
+  }, [location.pathname])
+
+  // Lock body scroll when mobile menu open
+  useEffect(() => {
+    if (!isMenuOpen) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    return () => {
+      document.body.style.overflow = prev
+    }
+  }, [isMenuOpen])
 
   // We create a helper function to highlight the active route in our Navbar (yellow text)
   const matchRoute = (route) => {
@@ -130,10 +148,154 @@ export default function Navbar() {
         </div>
         
         {/* We add a hamburger menu icon for mobile screens */}
-        <button className="mr-4 md:hidden">
-          <AiOutlineMenu fontSize={24} fill="#AFB2BF" />
+        <button
+          className="mr-4 md:hidden"
+          onClick={() => setIsMenuOpen((p) => !p)}
+          aria-label="Open menu"
+        >
+          {isMenuOpen ? (
+            <AiOutlineClose fontSize={24} fill="#AFB2BF" />
+          ) : (
+            <AiOutlineMenu fontSize={24} fill="#AFB2BF" />
+          )}
         </button>
       </div>
+
+      {/* Mobile Menu Drawer */}
+      {isMenuOpen && (
+        <div className="fixed inset-0 z-[2000] md:hidden relative">
+          {/* Backdrop */}
+          <button
+            className="absolute inset-0 z-0 h-full w-full bg-richblack-900/70"
+            aria-label="Close menu"
+            onClick={() => setIsMenuOpen(false)}
+          />
+
+          {/* Drawer */}
+          <div className="absolute right-0 top-0 z-10 h-full w-[82%] max-w-[360px] overflow-auto bg-richblack-900 border-l border-richblack-700">
+            <div className="flex items-center justify-between px-5 py-4 border-b border-richblack-700">
+              <Link to="/" className="flex items-center" onClick={() => setIsMenuOpen(false)}>
+                <img src={logo} alt="Logo" width={140} height={28} loading="lazy" />
+              </Link>
+              <button
+                onClick={() => setIsMenuOpen(false)}
+                className="p-2"
+                aria-label="Close menu"
+              >
+                <AiOutlineClose fontSize={22} fill="#AFB2BF" />
+              </button>
+            </div>
+
+            <div className="px-5 py-4">
+              {/* Mobile nav links */}
+              <ul className="flex flex-col gap-2 text-richblack-25">
+                {NavbarLinks.map((link, index) => (
+                  <li key={index}>
+                    {link.title === "Catalog" ? (
+                      <div className="flex flex-col">
+                        <button
+                          className="flex w-full items-center justify-between rounded-md px-3 py-3 text-left text-richblack-25 hover:bg-richblack-800"
+                          onClick={() => setIsCatalogOpen((p) => !p)}
+                        >
+                          <span>Catalog</span>
+                          <BsChevronDown
+                            className={`transition-transform duration-200 ${
+                              isCatalogOpen ? "rotate-180" : ""
+                            }`}
+                          />
+                        </button>
+
+                        {isCatalogOpen && (
+                          <div className="mt-1 ml-2 flex flex-col rounded-md border border-richblack-700 bg-richblack-800">
+                            {loading ? (
+                              <p className="px-4 py-3 text-sm text-richblack-200">
+                                Loading...
+                              </p>
+                            ) : subLinks?.length ? (
+                              subLinks.map((subLink, i) => (
+                                <Link
+                                  key={i}
+                                  to={`/catalog/${subLink.name
+                                    .split(" ")
+                                    .join("-")
+                                    .toLowerCase()}`}
+                                  className="px-4 py-3 text-sm text-richblack-25 hover:bg-richblack-700"
+                                  onClick={() => setIsMenuOpen(false)}
+                                >
+                                  {subLink.name}
+                                </Link>
+                              ))
+                            ) : (
+                              <p className="px-4 py-3 text-sm text-richblack-200">
+                                No Categories Found
+                              </p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <Link
+                        to={link?.path}
+                        className={`block rounded-md px-3 py-3 ${
+                          matchRoute(link?.path)
+                            ? "bg-richblack-800 text-yellow-50"
+                            : "text-richblack-25 hover:bg-richblack-800"
+                        }`}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {link.title}
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
+
+              {/* Divider */}
+              <div className="my-5 h-px w-full bg-richblack-700" />
+
+              {/* Mobile actions */}
+              <div className="flex flex-col gap-3">
+                {user && user?.accountType !== "Instructor" && (
+                  <Link
+                    to="/dashboard/cart"
+                    className="flex items-center justify-between rounded-md border border-richblack-700 bg-richblack-800 px-4 py-3 text-richblack-25"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    <span className="flex items-center gap-2">
+                      <AiOutlineShoppingCart className="text-xl text-richblack-100" />
+                      Cart
+                    </span>
+                    {totalItems > 0 && (
+                      <span className="grid h-6 w-6 place-items-center rounded-full bg-richblack-600 text-xs font-bold text-yellow-100">
+                        {totalItems}
+                      </span>
+                    )}
+                  </Link>
+                )}
+
+                {token === null ? (
+                  <div className="flex gap-3">
+                    <Link to="/login" className="flex-1" onClick={() => setIsMenuOpen(false)}>
+                      <button className="w-full rounded-md border border-richblack-700 bg-richblack-800 px-4 py-3 text-sm font-medium text-richblack-100">
+                        Log in
+                      </button>
+                    </Link>
+                    <Link to="/signup" className="flex-1" onClick={() => setIsMenuOpen(false)}>
+                      <button className="w-full rounded-md bg-yellow-50 px-4 py-3 text-sm font-semibold text-richblack-900">
+                        Sign up
+                      </button>
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="rounded-md border border-richblack-700 bg-richblack-800 px-4 py-3">
+                    <ProfileDropdown />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

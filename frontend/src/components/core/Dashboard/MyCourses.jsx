@@ -22,9 +22,12 @@ const MyCourses = () => {
 
   return (
     <div>
+      <p className="mb-3 text-sm text-richblack-300">
+        Home / Dashboard / <span className="text-yellow-50">Courses</span>
+      </p>
       {/* Header Section */}
       <div className="mb-14 flex items-center justify-between">
-        <h1 className="text-3xl font-medium text-richblack-5">My Courses</h1>
+        <h1 className="text-3xl font-medium text-richblack-5">My Course</h1>
         
         {/* Navigation Button */}
         <button
@@ -32,7 +35,7 @@ const MyCourses = () => {
           className="flex items-center gap-x-2 rounded-md bg-yellow-50 px-6 py-3 text-richblack-900 font-semibold hover:scale-95 transition-all duration-200"
         >
           <VscAdd className="text-lg" />
-          Add Course
+          New
         </button>
       </div>
 

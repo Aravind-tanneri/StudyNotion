@@ -8,12 +8,12 @@ import { useSelector } from "react-redux"
 import {deleteCourse,fetchInstructorCourses} from "../../../services/operations/courseDetailsAPI"
 import ConfirmationModal from "../../common/ConfirmationModal"
 
-const CoursesTable = ({courses,setCourses}) => {
+const CoursesTable = ({ courses, setCourses }) => {
 
     const navigate =useNavigate()
     const {token} = useSelector((state)=>state.auth)
     const [loading,setLoading]=useState(false)
-    const [confirmationModel,secConfirmationModal]= useState(null)
+    const [confirmationModal, setConfirmationModal] = useState(null)
 
     const handleCourseDelete = async (courseId)=>{
         setLoading(true)
@@ -23,7 +23,7 @@ const CoursesTable = ({courses,setCourses}) => {
         const result = await fetchInstructorCourses(token)
         if(result)setCourses(result)
 
-            setConfimationModel(null)
+            setConfirmationModal(null)
             setLoading(false)
             console.log("Course Deleted: ",courseId)
     }

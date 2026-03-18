@@ -1,15 +1,21 @@
 import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import { apiConnector } from "../../../services/apiConnector"
-import { categories } from "../../../services/apis"
+import { useDispatch, useSelector } from "react-redux"
+import { apiConnector } from "../../../../../services/apiconnector"
+import { categories } from "../../../../../services/apis"
 import RequirementField from "./RequirementField"
 import Upload from "./Upload"
+import { addCourseDetails } from "../../../../../services/operations/courseDetailsAPI"
+import { setCourse, setStep } from "../../../../../slices/courseSlice"
 
 import { HiOutlineCurrencyRupee } from "react-icons/hi"
 
 const CourseInformationForm = () => {
   const { register, handleSubmit, setValue, getValues, formState: { errors } } = useForm()
   const [courseCategories, setCourseCategories] = useState([])
+  const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch()
+  const { token } = useSelector((state) => state.auth)
 
   // Fetch Categories from Backend
   useEffect(() => {
@@ -27,36 +33,30 @@ const CourseInformationForm = () => {
     const formData = new FormData();
 
     // 2. Append all the text data
-    formData.append("courseName", data.courseTitle);
-    formData.append("courseDescription", data.courseShortDesc);
-    formData.append("price", data.coursePrice);
-    formData.append("whatYouWillLearn", data.courseBenefits);
-    formData.append("category", data.courseCategory);
+    formData.append("courseName", data.courseTitle)
+    formData.append("courseDescription", data.courseShortDesc)
+    formData.append("price", data.coursePrice)
+    formData.append("whatYouWillLearn", data.courseBenefits)
+    formData.append("tag", data.courseTags || [])
     
     // 3. Special Case: Convert the Array into a String for the backend
-    formData.append("instructions", JSON.stringify(data.courseRequirements));
+    formData.append("instructions", JSON.stringify(data.courseRequirements || []))
     
     // 4. Append the Image File
-    formData.append("thumbnailImage", data.courseImage);
+    formData.append("thumbnailImage", data.courseImage)
 
     // Optional: Add status (Draft by default)
-    formData.append("status", "Draft");
+    formData.append("status", "Draft")
 
-    // 5. Dispatch the API call 
-    const { token } = useSelector((state) => state.auth); 
-    
-    setLoading(true);
-    console.log("SENDING FORM DATA...");
-    
-    const result = await addCourseDetails(formData, token);
+    setLoading(true)
+    const result = await addCourseDetails(formData, token)
     
     if (result) {
-        // 6. If successful, save the new course to Redux and move to Step 2
-        dispatch(setStep(2));
-        dispatch(setCourse(result));
+      dispatch(setCourse(result))
+      dispatch(setStep(2))
     }
-    setLoading(false);
-}
+    setLoading(false)
+  }
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -169,9 +169,10 @@ const CourseInformationForm = () => {
       <div className="flex justify-end gap-x-2">
         <button
           type="submit"
-          className="flex items-center bg-yellow-50 text-black px-6 py-3 font-semibold rounded-md"
+          disabled={loading}
+          className="flex items-center bg-yellow-50 text-black px-6 py-3 font-semibold rounded-md disabled:cursor-not-allowed disabled:opacity-75"
         >
-          Next Step
+          {loading ? "Saving..." : "Next"}
         </button>
       </div>
     </form>

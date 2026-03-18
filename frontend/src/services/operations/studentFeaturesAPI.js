@@ -71,7 +71,7 @@ export async function buyCourse(token, courses, userDetails, navigate, dispatch)
       description: "Thank You for Purchasing the Course",
       image: rzpLogo,
       prefill: {
-        name: `${userDetails.firstName}`,
+        name: `${userDetails?.name || ""}`,
         email: userDetails.email,
       },
       handler: function (response) {

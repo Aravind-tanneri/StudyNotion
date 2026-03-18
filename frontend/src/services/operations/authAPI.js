@@ -3,7 +3,7 @@ import { setLoading, setToken } from "../../slices/authSlice"
 import { apiConnector } from "../apiconnector"
 import { endpoints } from "../apis"
 
-const { SENDOTP_API, SIGNUP_API, LOGIN_API } = endpoints
+const { SENDOTP_API, SIGNUP_API, LOGIN_API, RESETPASSTOKEN_API, RESETPASSWORD_API } = endpoints
 
 export function sendOtp(email, navigate) {
   return async (dispatch) => {
@@ -100,5 +100,55 @@ export function logout(navigate) {
     localStorage.removeItem("user")
     toast.success("Logged Out")
     navigate("/")
+  }
+}
+
+export function getPasswordResetToken(email, setEmailSent) {
+  return async (dispatch) => {
+    const toastId = toast.loading("Loading...")
+    dispatch(setLoading(true))
+    try {
+      const response = await apiConnector("POST", RESETPASSTOKEN_API, { email })
+      console.log("RESETPASSTOKEN_API RESPONSE............", response)
+
+      if (!response.data.success) {
+        throw new Error(response.data.message)
+      }
+
+      toast.success("Reset link sent to your email")
+      setEmailSent(true)
+    } catch (error) {
+      console.log("RESETPASSTOKEN_API ERROR............", error)
+      toast.error(error?.response?.data?.message || "Could Not Send Reset Email")
+    }
+    dispatch(setLoading(false))
+    toast.dismiss(toastId)
+  }
+}
+
+export function resetPassword(password, confirmPassword, token, navigate) {
+  return async (dispatch) => {
+    const toastId = toast.loading("Loading...")
+    dispatch(setLoading(true))
+    try {
+      const response = await apiConnector("POST", RESETPASSWORD_API, {
+        password,
+        confirmPassword,
+        token,
+      })
+      console.log("RESETPASSWORD_API RESPONSE............", response)
+
+      if (!response.data.success) {
+        throw new Error(response.data.message)
+      }
+
+      toast.success("Password reset successfully")
+      navigate("/login")
+    } catch (error) {
+      console.log("RESETPASSWORD_API ERROR............", error)
+      toast.error(error?.response?.data?.message || "Could Not Reset Password")
+    }
+    dispatch(setLoading(false))
+    toast.dismiss(toastId)
   }
 }

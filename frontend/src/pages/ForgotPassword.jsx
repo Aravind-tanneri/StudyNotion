@@ -1,23 +1,19 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { BiArrowBack } from 'react-icons/bi' // Using the correct icon we just fixed!
+import { useDispatch, useSelector } from "react-redux"
+import { getPasswordResetToken } from "../services/operations/authAPI"
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("")
   const [emailSent, setEmailSent] = useState(false) // Toggle between the two screens
+  const dispatch = useDispatch()
+  const { loading } = useSelector((state) => state.auth)
 
   const handleOnSubmit = (e) => {
     e.preventDefault()
-    
-    // If email hasn't been sent yet, we send it. 
-    // If it has, this same button acts as the "Resend" button!
-    console.log("Reset email triggered for:", email)
-    
-    // We will dispatch our password reset action here later!
-    // dispatch(resetPasswordToken(email, setEmailSent))
-    
-    // For now, let's just simulate a successful email send:
-    setEmailSent(true) 
+
+    dispatch(getPasswordResetToken(email, setEmailSent))
   }
 
   return (
@@ -60,9 +56,10 @@ const ForgotPassword = () => {
           {/* Dynamic Button */}
           <button 
             type="submit" 
-            className='mt-6 w-full rounded-[8px] bg-yellow-50 py-[12px] px-[12px] font-medium text-richblack-900 transition-all duration-200 hover:scale-95'
+            disabled={loading}
+            className='mt-6 w-full rounded-[8px] bg-yellow-50 py-[12px] px-[12px] font-medium text-richblack-900 transition-all duration-200 hover:scale-95 disabled:cursor-not-allowed disabled:opacity-75'
           >
-            {!emailSent ? "Reset Password" : "Resend email"}
+            {!emailSent ? (loading ? "Sending..." : "Reset Password") : (loading ? "Sending..." : "Resend email")}
           </button>
         </form>
 
