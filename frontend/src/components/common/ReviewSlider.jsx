@@ -36,73 +36,71 @@ const ReviewSlider = () => {
   ]);
 
   return (
-    <div className='text-white w-full'>
-      <div className='my-[50px] h-auto max-w-maxContentTab lg:max-w-maxContent mx-auto'>
-        <Swiper
-          // Default settings for mobile
-          slidesPerView={1}
-          spaceBetween={24}
-          loop={true}
-          freeMode={true}
-          autoplay={{
-            delay: 2500,
-            disableOnInteraction: false,
-          }}
-          // Responsive Breakpoints: This is the magic for Desktop vs Mobile
-          breakpoints={{
-            640: { slidesPerView: 1 }, // Mobile: 1 card
-            768: { slidesPerView: 2 }, // Tablet: 2 cards
-            1024: { slidesPerView: 4 }, // Desktop: 4 cards (like your image!)
-          }}
-          modules={[FreeMode, Pagination, Autoplay]}
-          className='w-full'
-        >
-          {reviews.map((review, i) => (
-            <SwiperSlide key={i}>
-              <div className='flex flex-col gap-3 bg-richblack-800 p-4 rounded-lg text-[14px] text-richblack-25 min-h-[180px]'>
-                
-                {/* User Info Section */}
-                <div className='flex items-center gap-4'>
-                  <img 
-                    src={review?.user?.image} 
-                    alt="user" 
-                    className='h-12 w-12 rounded-full object-cover' 
-                  />
-                  <div className='flex flex-col'>
-                    <h1 className='font-semibold text-richblack-5'>
-                      {`${review?.user?.firstName} ${review?.user?.lastName}`}
-                    </h1>
-                    <h2 className='text-[12px] font-medium text-richblack-500'>
-                      {review?.user?.firstName.toLowerCase()}@example.com
-                    </h2>
+    <div className='relative mx-auto my-8 flex w-11/12 max-w-maxContent flex-col items-center justify-between gap-8 bg-richblack-900 text-white'>
+      <h1 className='text-center text-4xl mt-6 font-semibold -mb-4'>
+        Reviews from other learners
+      </h1>
+      <div className='w-full [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]'>
+        <div className='my-[50px] h-auto max-w-maxContentTab lg:max-w-maxContent mx-auto'>
+          <Swiper
+            slidesPerView={1}
+            spaceBetween={24}
+            loop={true}
+            freeMode={true}
+            autoplay={{
+              delay: 2500,
+              disableOnInteraction: false,
+            }}
+            breakpoints={{
+              640: { slidesPerView: 1 },
+              768: { slidesPerView: 2 },
+              1024: { slidesPerView: 4 },
+            }}
+            modules={[FreeMode, Pagination, Autoplay]}
+            className='w-full'
+          >
+            {reviews.map((review, i) => (
+              <SwiperSlide key={i}>
+                <div className='flex flex-col gap-3 bg-richblack-800 p-4 rounded-lg text-[14px] text-richblack-25 min-h-[180px]'>
+                  <div className='flex items-center gap-4'>
+                    <img
+                      src={review?.user?.image}
+                      alt="user"
+                      className='h-12 w-12 rounded-full object-cover'
+                    />
+                    <div className='flex flex-col'>
+                      <h1 className='font-semibold text-richblack-5'>
+                        {`${review?.user?.firstName} ${review?.user?.lastName}`}
+                      </h1>
+                      <h2 className='text-[12px] font-medium text-richblack-500'>
+                        {review?.user?.firstName.toLowerCase()}@example.com
+                      </h2>
+                    </div>
+                  </div>
+
+                  <p className='font-medium text-richblack-25'>{review?.review}</p>
+
+                  <div className='flex items-center gap-2 mt-auto pt-2'>
+                    <h3 className='font-semibold text-yellow-100'>
+                      {review.rating.toFixed(1)}
+                    </h3>
+                    <div className="flex gap-1">
+                      {[...Array(5)].map((_, i) => (
+                        <FaStar
+                          key={i}
+                          size={20}
+                          color={
+                            i < Math.floor(review.rating) ? "#FFD700" : "#2C333F"
+                          }
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
-
-                {/* Review Text */}
-                <p className='font-medium text-richblack-25'>
-                  {review?.review}
-                </p>
-
-                {/* Rating & Stars */}
-                <div className='flex items-center gap-2 mt-auto pt-2'>
-                  <h3 className='font-semibold text-yellow-100'>
-                    {review.rating.toFixed(1)}
-                  </h3>
-                  <div className="flex gap-1">
-                    {[...Array(5)].map((_, i) => (
-                        <FaStar 
-                            key={i} 
-                            size={20} 
-                            color={i < Math.floor(review.rating) ? "#FFD700" : "#2C333F"} 
-                        />
-                    ))}
-                </div>
-                </div>
-                
-              </div>
-            </SwiperSlide>
-          ))}
-        </Swiper>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
       </div>
     </div>
   )

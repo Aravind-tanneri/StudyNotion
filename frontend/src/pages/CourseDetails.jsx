@@ -6,107 +6,213 @@ import { fetchCourseDetails } from "../services/operations/courseDetailsAPI"
 import { addToCart } from "../slices/cartSlice"
 import { toast } from "react-hot-toast"
 
+import { BiInfoCircle } from 'react-icons/bi'
+import { HiOutlineGlobeAlt } from 'react-icons/hi'
+import { FaStar } from 'react-icons/fa'
+import { MdOutlineArrowForwardIos } from 'react-icons/md'
+import CourseBuyCard from '../components/core/Catalog/CourseBuyCard'
+
 export default function CourseDetails() {
-  const { user } = useSelector((state) => state.profile)
-  const { token } = useSelector((state) => state.auth)
-  const { loading } = useSelector((state) => state.profile)
-  const { paymentLoading } = useSelector((state) => state.course)
-  
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const { courseId } = useParams()
+    const { user } = useSelector((state) => state.profile)
+    const { token } = useSelector((state) => state.auth)
+    const { loading } = useSelector((state) => state.profile)
+    const { paymentLoading } = useSelector((state) => state.course)
+    
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const { courseId } = useParams()
 
-  const [courseData, setCourseData] = useState(null)
+    const [courseData, setCourseData] = useState(null)
+    const [activeSections, setActiveSections] = useState([])
 
-  useEffect(() => {
-    // We fetch the public course data when the page loads
-    const getCourseSpecificDetails = async () => {
-      try {
-        const res = await fetchCourseDetails(courseId)
-        setCourseData(res?.data?.courseDetails)
-      } catch (error) {
-        console.log("Could not fetch Course Details")
-      }
+    // 1. Fetch the course data exactly like your old file
+    useEffect(() => {
+        const getCourseSpecificDetails = async () => {
+            try {
+                const res = await fetchCourseDetails(courseId)
+                setCourseData(res?.data?.courseDetails)
+            } catch (error) {
+                console.log("Could not fetch Course Details")
+            }
+        }
+        getCourseSpecificDetails()
+    }, [courseId])
+
+    // 2. Your Buy Course Logic
+    const handleBuyCourse = () => {
+        if (token) {
+            buyCourse(token, [courseId], user, navigate, dispatch)
+            return
+        }
+        toast.error("Please log in to purchase the course")
+        navigate("/login")
     }
-    getCourseSpecificDetails()
-  }, [courseId])
 
-  // We handle the direct purchase flow
-  const handleBuyCourse = () => {
-    if (token) {
-      buyCourse(token, [courseId], user, navigate, dispatch)
-      return
+    // 3. Your Add To Cart Logic
+    const handleAddToCart = () => {
+        if (user && user?.accountType === "Instructor") {
+            toast.error("You are an Instructor. You can't buy a course.")
+            return
+        }
+        if (token) {
+            dispatch(addToCart(courseData))
+            return
+        }
+        toast.error("Please log in to add to cart")
+        navigate("/login")
     }
-    // If they aren't logged in, we force them to the login page
-    toast.error("Please log in to purchase the course")
-    navigate("/login")
-  }
 
-  // We handle adding the item to the Redux cart
-  const handleAddToCart = () => {
-    if (user && user?.accountType === "Instructor") {
-      toast.error("You are an Instructor. You can't buy a course.")
-      return
+    const toggleSection = (id) => {
+        setActiveSections(
+            activeSections.includes(id) 
+            ? activeSections.filter((sec) => sec !== id) 
+            : [...activeSections, id]
+        )
     }
-    if (token) {
-      dispatch(addToCart(courseData))
-      return
-    }
-    toast.error("Please log in to add to cart")
-    navigate("/login")
-  }
 
-  if (loading || !courseData) {
+    // Loading Screen
+    if (loading || !courseData) {
+        return (
+            <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center bg-richblack-900">
+                <div className="spinner text-white">Loading...</div>
+            </div>
+        )
+    }
+
     return (
-      <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
-        <div className="spinner"></div>
-      </div>
+        <div className="flex flex-col bg-richblack-900 text-white min-h-screen pb-20">
+            
+            {/* HERO SECTION */}
+            <div className="bg-richblack-800 relative">
+                <div className="w-11/12 max-w-maxContent mx-auto flex flex-col lg:flex-row py-10 lg:py-16 relative">
+                    
+                    <div className="lg:w-2/3 flex flex-col gap-4 pr-4 border-r border-transparent">
+                        <p className="text-sm text-richblack-300">
+                            Home / Learning / <span className="text-yellow-50">{courseData?.category?.name || "Category"}</span>
+                        </p>
+                        <h1 className="text-4xl font-semibold text-richblack-5 sm:text-[42px] leading-tight">
+                            {courseData?.courseName}
+                        </h1>
+                        <p className="text-richblack-200 text-lg">
+                            {courseData?.courseDescription}
+                        </p>
+                        
+                        <div className="flex flex-wrap items-center gap-2 text-md">
+                            <span className="text-yellow-50 font-bold">4.5</span>
+                            <div className="flex text-yellow-50">
+                                <FaStar /><FaStar /><FaStar /><FaStar /><FaStar />
+                            </div>
+                            <span className="text-richblack-25">({courseData?.ratingAndReviews?.length || 0} ratings)</span>
+                            <span className="text-richblack-25 ml-2">{courseData?.studentsEnrolled?.length || 0} students</span>
+                        </div>
+
+                        <p className="text-richblack-25">
+                            Created by {courseData?.instructor?.firstName} {courseData?.instructor?.lastName}
+                        </p>
+                        <div className="flex flex-wrap gap-5 text-lg text-richblack-25">
+                            <p className="flex items-center gap-2">
+                                <BiInfoCircle /> Created at {new Date(courseData?.createdAt).toLocaleDateString()}
+                            </p>
+                            <p className="flex items-center gap-2">
+                                <HiOutlineGlobeAlt /> English
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Desktop Buy Card */}
+                    <div className="hidden lg:block lg:w-1/3 absolute right-0 top-10 z-10">
+                        <CourseBuyCard 
+                            course={courseData} 
+                            handleAddToCart={handleAddToCart} 
+                            handleBuyCourse={handleBuyCourse} 
+                        />
+                    </div>
+                </div>
+            </div>
+
+            {/* MAIN CONTENT SECTION */}
+            <div className="w-11/12 max-w-maxContent mx-auto flex flex-col lg:flex-row py-10">
+                
+                <div className="lg:w-[65%] flex flex-col gap-10 pr-4 lg:pr-10">
+                    
+                    {/* Mobile Buy Card */}
+                    <div className="lg:hidden w-full mb-8">
+                        <CourseBuyCard 
+                            course={courseData} 
+                            handleAddToCart={handleAddToCart} 
+                            handleBuyCourse={handleBuyCourse} 
+                        />
+                    </div>
+
+                    {/* What you'll learn */}
+                    <div className="border border-richblack-700 bg-richblack-800 p-8 rounded-md">
+                        <p className="text-3xl font-semibold text-richblack-5 mb-5">What you'll learn</p>
+                        <div className="text-richblack-50 leading-relaxed">
+                            {/* Rendered directly as text since DB usually stores it as a single block */}
+                            {courseData?.whatYouWillLearn}
+                        </div>
+                    </div>
+
+                    {/* Course Content Accordion */}
+                    <div className="flex flex-col gap-4">
+                        <p className="text-3xl font-semibold text-richblack-5">Course content</p>
+                        <div className="flex justify-between items-center text-sm text-richblack-200">
+                            <p>{courseData?.courseContent?.length || 0} sections</p>
+                            <button className="text-yellow-50" onClick={() => setActiveSections([])}>
+                                Collapse all sections
+                            </button>
+                        </div>
+
+                        <div className="border border-richblack-600 rounded-md">
+                            {courseData?.courseContent?.map((section) => (
+                                <div key={section._id} className="border-b border-richblack-600 last:border-none">
+                                    
+                                    <div 
+                                        className="bg-richblack-700 px-5 py-4 flex justify-between cursor-pointer hover:bg-richblack-600 transition-all duration-200"
+                                        onClick={() => toggleSection(section._id)}
+                                    >
+                                        <div className="flex items-center gap-3 text-richblack-5 font-medium">
+                                            <MdOutlineArrowForwardIos className={`${activeSections.includes(section._id) ? "rotate-90" : ""} transition-all duration-200`} />
+                                            <p>{section.sectionName}</p>
+                                        </div>
+                                        <p className="text-yellow-50 text-sm">{section?.subSection?.length || 0} lectures</p>
+                                    </div>
+
+                                    {activeSections.includes(section._id) && (
+                                        <div className="bg-richblack-900 px-5 py-4 flex flex-col gap-3 text-sm text-richblack-50">
+                                            {section?.subSection?.map((sub, i) => (
+                                                <p key={i} className="flex items-center gap-2">
+                                                    <span>🎥</span> {sub.title}
+                                                </p>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Author Profile */}
+                    <div className="flex flex-col gap-4 mt-6">
+                        <p className="text-3xl font-semibold text-richblack-5">Author</p>
+                        <div className="flex items-center gap-4">
+                            <img 
+                                src={courseData?.instructor?.image} 
+                                alt="Author" 
+                                className="h-14 w-14 rounded-full object-cover" 
+                            />
+                            <p className="text-lg font-medium text-richblack-5">
+                                {courseData?.instructor?.firstName} {courseData?.instructor?.lastName}
+                            </p>
+                        </div>
+                        <p className="text-richblack-50 text-sm mt-2 leading-relaxed">
+                            {courseData?.instructor?.additionalDetails?.about || "This instructor has not provided an about section yet."}
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
     )
-  }
-
-  return (
-    <div className="flex flex-col items-center text-white bg-richblack-800">
-      {/* Hero Section */}
-      <div className="w-full bg-richblack-800 px-4 py-8 md:px-8 lg:px-24 border-b border-richblack-700">
-        <div className="flex flex-col gap-4 border-r border-richblack-700 w-full md:w-[60%] py-4">
-          <h1 className="text-4xl font-bold text-richblack-5 sm:text-[42px]">
-            {courseData?.courseName}
-          </h1>
-          <p className="text-richblack-200">{courseData?.courseDescription}</p>
-          <p className="text-xl font-semibold text-yellow-50">Rs. {courseData?.price}</p>
-          <p className="text-richblack-200">Created By {courseData?.instructor?.firstName}</p>
-          
-          <div className="flex flex-col gap-4 py-4 md:w-1/2">
-             <button
-                onClick={handleBuyCourse}
-                className="bg-yellow-50 text-richblack-900 font-semibold py-3 px-6 rounded-md hover:scale-95 transition-all"
-              >
-                Buy Now
-              </button>
-              <button
-                onClick={handleAddToCart}
-                className="bg-richblack-800 text-richblack-5 border border-richblack-50 font-semibold py-3 px-6 rounded-md hover:bg-richblack-900 transition-all"
-              >
-                Add to Cart
-              </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Course Content / Syllabus Section */}
-      <div className="mx-auto box-content px-4 text-start text-richblack-5 lg:w-[1260px] py-12">
-        <div className="max-w-[830px]">
-          <h2 className="text-3xl font-semibold mb-6">Course Content</h2>
-          <div className="flex flex-col gap-2">
-            {courseData?.courseContent?.map((section, index) => (
-              <div key={index} className="border border-richblack-600 rounded-md p-4 bg-richblack-700">
-                <p className="font-medium">{section.sectionName}</p>
-                {/* we can map over the subSections here to show video titles later! */}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
 }
