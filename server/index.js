@@ -43,3 +43,14 @@ app.get("/", (req, res) => {
 app.listen(PORT, () => {
     console.log(`App is running successfully at port ${PORT}`);
 });
+
+
+//self ping
+
+const URL = "https://studynotion-ulxv.onrender.com";
+
+setInterval(() => {
+  axios.get(URL)
+    .then(() => console.log("Self-ping successful! Server is awake."))
+    .catch((err) => console.error("Self-ping failed:", err.message));
+}, 14 * 60 * 1000); // 14 minutes in milliseconds
