@@ -28,7 +28,7 @@ app.use(
 
 app.use(
 	cors({
-		origin: "https://study-notion-frontend-gamma-red.vercel.app/", 
+		origin: "https://study-notion-frontend-nb0x6jra6-aravind-tanneris-projects.vercel.app/", 
 		credentials: true,
 	})
 );
