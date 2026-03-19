@@ -26,12 +26,7 @@ app.use(
     })
 );
 
-app.use(
-	cors({
-		origin: "https://study-notion-frontend-gamma-red.vercel.app/", 
-		credentials: true,
-	})
-);
+app.use(cors({ origin: "*", credentials: true }));
 
 app.use("/api/auth", userRoutes);
 app.use("/api/course", courseRoutes);
