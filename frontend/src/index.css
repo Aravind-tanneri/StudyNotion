@@ -131,3 +131,8 @@
     background: url("./assets/home/bgHome.png");
     height: 320px;
 }
+
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}

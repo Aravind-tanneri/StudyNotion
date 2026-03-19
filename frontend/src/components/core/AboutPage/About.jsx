@@ -2,7 +2,7 @@ import React from 'react'
 import aboutus1 from "../../../assets/Images/aboutus1.webp"
 import aboutus2 from "../../../assets/Images/aboutus2.webp"
 import aboutus3 from "../../../assets/Images/aboutus3.webp"
-import FoundingStoryImage from "../../../assets/Images/FoundingStoryImage.jpg"
+import FoundingStoryImage from "../../../assets/Images/foundingStoryImage.jpg"
 import { FaQuoteLeft, FaQuoteRight } from "react-icons/fa"
 
 

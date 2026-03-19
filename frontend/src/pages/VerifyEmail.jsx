@@ -41,7 +41,7 @@ const VerifyEmail = () => {
                         Verify email
                     </h1>
                     <p className='text-[1.125rem] leading-[1.625rem] my-4 text-richblack-100'>
-                        A verification code has been sent to us. Enter the code below
+                        A verification code has been sent to you. Enter the code below
                     </p>
                     
                     <form onSubmit={handleOnSubmit}>
