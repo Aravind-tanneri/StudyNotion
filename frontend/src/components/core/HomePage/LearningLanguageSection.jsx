@@ -1,5 +1,5 @@
 import React from 'react'
-import know_your_progress from "../../../assets/Images/Know_Your_Progress.png"
+import know_your_progress from "../../../assets/Images/Know_your_progress.png"
 import compare_with_others from "../../../assets/Images/Compare_with_others.svg"
 import plan_your_lessons from "../../../assets/Images/Plan_your_lessons.svg"
 
