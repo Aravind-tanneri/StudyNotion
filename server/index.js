@@ -28,7 +28,7 @@ app.use(
 
 app.use(
 	cors({
-		origin: "http://localhost:5173", // Replace with actual frontend URL/port
+		origin: "https://study-notion-frontend-gamma-red.vercel.app/", 
 		credentials: true,
 	})
 );
