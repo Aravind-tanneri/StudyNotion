@@ -27,10 +27,11 @@ import Contact from './pages/Contact'
 import TopPromoBanner from './components/common/TopPromoBanner'
 import ForgotPassword from './pages/ForgotPassword'
 import UpdatePassword from "./pages/UpdatePassword"
-import Wishlist from "./components/core/Dashboard/Wishlist"
+import Cart from "./components/core/Dashboard/Cart"
 import Checkout from "./components/core/Dashboard/Checkout"
 import PurchaseHistory from "./components/core/Dashboard/PurchaseHistory"
 import DashboardCoursesRedirect from "./components/core/Dashboard/DashboardCoursesRedirect"
+import Catalog from './pages/Catalog'
 
 
 const App = () => {
@@ -51,6 +52,7 @@ const App = () => {
         <Route path="/contact" element={<Contact/>}/>
         <Route path="/forgot-password" element={<ForgotPassword/>} />
         <Route path="/update-password/:token" element={<UpdatePassword />} />
+        <Route path="/catalog/:catalogName" element={<Catalog/>} />
 
         {/* Protected Dashboard Routes */}
         <Route 
@@ -67,7 +69,7 @@ const App = () => {
           <Route path="/dashboard/add-course" element={<AddCourse />} />
           <Route path="dashboard/edit-course/:courseId" element={<EditCourse />} />
           <Route path="/dashboard/my-courses" element={<MyCourses/>}/>
-          <Route path="/dashboard/wishlist" element={<Wishlist />} />
+          <Route path="/dashboard/cart" element={<Cart />} />
           <Route path="/dashboard/checkout" element={<Checkout />} />
           <Route path="/dashboard/purchase-history" element={<PurchaseHistory />} />
           <Route path="/dashboard/courses" element={<DashboardCoursesRedirect />} />

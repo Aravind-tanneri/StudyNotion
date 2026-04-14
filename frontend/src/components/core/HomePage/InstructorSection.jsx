@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import InstructorImage from "../../../assets/Images/Instructor.jpg"
 import { FaArrowRight } from 'react-icons/fa'
 
@@ -34,10 +35,12 @@ const InstructorSection = () => {
 
             {/* Yellow Button */}
             <div className='w-fit'>
-                <button className='btn-grad'>
-                    Start Teaching Today
-                    <FaArrowRight />
-                </button>
+                <Link to="/signup">
+                    <button className='btn-grad'>
+                        Start Teaching Today
+                        <FaArrowRight />
+                    </button>
+                </Link>
             </div>
 
         </div>

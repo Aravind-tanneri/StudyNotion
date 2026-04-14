@@ -15,7 +15,8 @@ const Catalog = () => {
   
   const [catalogPageData, setCatalogPageData] = useState(null)
   const [categoryId, setCategoryId] = useState("")
-  const [activeTab, setActiveTab] = useState(1) // State for Most Popular / New / Trending tabs
+  const [activeTab, setActiveTab] = useState(1) // 1=Most Popular, 2=New, 3=Trending
+
   // 1. Fetch all categories to find the ID that matches our URL slug
   useEffect(() => {
     const getCategories = async () => {
@@ -51,8 +52,9 @@ const Catalog = () => {
   }, [categoryId])
 
   // 3. Update tab course list whenever data/tab changes
+  // NOTE: Tag model stores courses under the 'course' field (not 'courses')
   const tabCourses = useMemo(() => {
-    const courses = catalogPageData?.data?.selectedCategory?.courses || []
+    const courses = catalogPageData?.data?.selectedCategory?.course || []
     let sorted = [...courses]
 
     if (activeTab === 1) {
@@ -88,6 +90,14 @@ const Catalog = () => {
     )
   }
 
+  // Gather reviews from all courses in the selected category
+  const categoryReviews = (catalogPageData?.data?.selectedCategory?.course || [])
+    .flatMap(c => (c.ratingAndReviews || []).map(r => ({ ...r, courseName: c.courseName })))
+    .filter(r => r?.review)
+    .slice(0, 6)
+
+  const courseCount = catalogPageData?.data?.selectedCategory?.course?.length || 0
+
   return (
     <div className="box-content bg-richblack-900 text-white pb-20">
         
@@ -106,13 +116,28 @@ const Catalog = () => {
                     <p className="max-w-[870px] text-richblack-200">
                         {catalogPageData?.data?.selectedCategory?.description}
                     </p>
+                    {/* Tags / Badges */}
+                    <div className="flex flex-wrap gap-2 mt-1">
+                        <span className="bg-yellow-50 text-richblack-900 text-xs font-bold px-3 py-1 rounded-full">
+                            {courseCount} {courseCount === 1 ? "Course" : "Courses"}
+                        </span>
+                        <span className="bg-richblack-700 text-richblack-200 text-xs font-medium px-3 py-1 rounded-full">
+                            Beginner to Advanced
+                        </span>
+                        <span className="bg-richblack-700 text-richblack-200 text-xs font-medium px-3 py-1 rounded-full">
+                            Updated 2026
+                        </span>
+                        <span className="bg-richblack-700 text-richblack-200 text-xs font-medium px-3 py-1 rounded-full">
+                            Certificate of Completion
+                        </span>
+                    </div>
                 </div>
 
                 {/* Right Related Resources */}
                 <div className="flex flex-col gap-2 lg:w-1/3 lg:pl-10 mt-6 lg:mt-0">
                     <h2 className="text-lg font-semibold text-richblack-5">Related resources</h2>
                     <ul className="list-disc pl-5 text-richblack-200 text-sm flex flex-col gap-2">
-                        <li>Doc {catalogPageData?.data?.selectedCategory?.name}</li>
+                        <li>Docs &amp; References</li>
                         <li>Cheatsheets</li>
                         <li>Articles</li>
                         <li>Community Forums</li>
@@ -152,25 +177,53 @@ const Catalog = () => {
                 <CourseSlider Courses={tabCourses} />
             </div>
 
-            {/* Section 2: Top courses in [Category Name] (Using Different Category data) */}
+            {/* Section 2: Top courses in [Different Category] */}
             <div className="flex flex-col gap-6">
                 <h2 className="text-3xl font-semibold text-richblack-5">
                     Top courses in {catalogPageData?.data?.differentCategory?.name || "Other Categories"}
                 </h2>
-                {/* Slider for Different Category */}
-                <CourseSlider Courses={catalogPageData?.data?.differentCategory?.courses} />
+                {/* Tag model uses 'course' field (not 'courses') */}
+                <CourseSlider Courses={catalogPageData?.data?.differentCategory?.course} />
             </div>
 
             {/* Section 3: Frequently Bought Together (Using Most Selling Courses in a GRID) */}
             <div className="flex flex-col gap-6">
                 <h2 className="text-3xl font-semibold text-richblack-5">Frequently Bought Together</h2>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-                    {/* We use slice(0, 4) to ensure we only show a maximum of 4 cards in this grid */}
                     {catalogPageData?.data?.mostSellingCourses?.slice(0, 4).map((course, index) => (
                         <CourseCard course={course} key={index} Height={"h-[300px]"} />
                     ))}
                 </div>
             </div>
+
+            {/* Section 4: Student Reviews */}
+            {categoryReviews.length > 0 && (
+                <div className="flex flex-col gap-6">
+                    <h2 className="text-3xl font-semibold text-richblack-5">Student Reviews</h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {categoryReviews.map((review, index) => (
+                            <div key={index} className="flex flex-col gap-3 rounded-xl bg-richblack-800 p-5 border border-richblack-700">
+                                <div className="flex items-center gap-3">
+                                    <img
+                                        src={review?.user?.image || `https://api.dicebear.com/5.x/initials/svg?seed=${encodeURIComponent(review?.user?.name || "User")}`}
+                                        alt={review?.user?.name || "Student"}
+                                        className="h-10 w-10 rounded-full object-cover flex-shrink-0"
+                                    />
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-semibold text-richblack-5 truncate">{review?.user?.name || "Anonymous"}</p>
+                                        <p className="text-xs text-richblack-300 truncate">{review?.courseName}</p>
+                                    </div>
+                                    <div className="flex items-center gap-0.5 text-yellow-50 text-sm flex-shrink-0">
+                                        {"★".repeat(Math.round(review?.rating || 0))}
+                                        <span className="text-richblack-600">{"★".repeat(5 - Math.round(review?.rating || 0))}</span>
+                                    </div>
+                                </div>
+                                <p className="text-sm text-richblack-200 leading-relaxed">"{review?.review}"</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
         </div>
     </div>

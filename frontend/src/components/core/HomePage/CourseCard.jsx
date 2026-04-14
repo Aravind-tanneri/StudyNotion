@@ -5,7 +5,7 @@ import { ImTree } from "react-icons/im"
 const CourseCard = ({ cardData, currentCard, setCurrentCard }) => {
   return (
     <div 
-        className={`w-[360px] lg:w-[25%] h-[300px] flex flex-col justify-between p-6 cursor-pointer transition-all duration-200 sm:mx-[20px]
+        className={`w-full max-w-[360px] lg:w-[30%] lg:max-w-none h-[300px] flex flex-col justify-between p-6 cursor-pointer transition-all duration-200
         ${currentCard === cardData.heading 
             ? "bg-white text-richblack-800 shadow-[12px_12px_0_0_#FFD60A]" // The Active Yellow Shadow Look
             : "bg-richblack-800 text-richblack-25" // The Inactive Dark Look

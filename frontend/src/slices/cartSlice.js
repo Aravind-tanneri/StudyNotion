@@ -33,7 +33,7 @@ const cartSlice = createSlice({
       
       // Increment the total number of items and add the course price to the total cost
       state.totalItems++
-      state.total += course.price
+      state.total = Number(state.total) + Number(course.price)
 
       // Instantly sync the Redux state to the browser's localStorage
       localStorage.setItem("cart", JSON.stringify(state.cart))
@@ -51,7 +51,7 @@ const cartSlice = createSlice({
       if (index >= 0) {
         // Subtract the price of the removed course from the total cost
         state.totalItems--
-        state.total -= state.cart[index].price
+        state.total = Number(state.total) - Number(state.cart[index].price)
         
         // Remove the course from the cart array using splice
         state.cart.splice(index, 1)

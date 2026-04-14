@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import HeroSection from '../components/core/HomePage/HeroSection'
 import CodeBlocks from '../components/core/HomePage/CodeBlocks'
 import ExploreMore from '../components/core/HomePage/ExploreMore'
@@ -64,9 +65,11 @@ const Home = () => {
                 <div className='text-[16px]'>
                     The modern StudyNotion is the dictates its own terms. Today, to be a competitive specialist requires more than professional skills.
                 </div>
-                <button className='btn-grad'>
-                    Learn More
-                </button>
+                <Link to="/about">
+                    <button className='btn-grad'>
+                        Learn More
+                    </button>
+                </Link>
             </div>
         </div>
 

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import know_your_progress from "../../../assets/Images/Know_your_progress.png"
 import compare_with_others from "../../../assets/Images/Compare_with_others.svg"
 import plan_your_lessons from "../../../assets/Images/Plan_your_lessons.svg"
@@ -47,9 +48,11 @@ const LearningLanguageSection = () => {
 
       {/* 3. The Button */}
       <div className='w-fit pb-10'>
-        <button className='btn-grad'>
-            Learn More
-        </button>
+        <Link to="/signup">
+            <button className='btn-grad'>
+                Learn More
+            </button>
+        </Link>
       </div>
 
     </div>

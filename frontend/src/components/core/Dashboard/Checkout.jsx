@@ -15,20 +15,25 @@ export default function Checkout() {
   const [fullName, setFullName] = useState(user?.name || "")
   const [email, setEmail] = useState(user?.email || "")
 
-  const payAmount = useMemo(() => {
-    // to match screenshot-like button value
-    return Math.round(total * 1.0167) // ~Rs 1200 -> 1220
+  const { taxAmount, grandTotal } = useMemo(() => {
+    const tax = Math.round(total * 0.0167) // 1.67% Fee & GST
+    return {
+      taxAmount: tax,
+      grandTotal: total + tax
+    }
   }, [total])
 
   const handlePay = () => {
     const courses = cart.map((c) => c._id)
-    dispatch(buyCourse(token, courses, user, navigate, dispatch))
+    // We send a temporary user object with the name/email entered in the form
+    const userWithFormData = { ...user, name: fullName, email: email }
+    dispatch(buyCourse(token, courses, userWithFormData, navigate, dispatch))
   }
 
   return (
     <div className="w-full text-white">
       <p className="mb-3 text-sm text-richblack-300">
-        Home / Wishlist / <span className="text-yellow-50">Checkout</span>
+        Home / Cart / <span className="text-yellow-50">Checkout</span>
       </p>
 
       <h1 className="text-3xl font-medium text-richblack-5">Checkout</h1>
@@ -112,15 +117,25 @@ export default function Checkout() {
             </label>
 
             <div className="mt-2 flex items-center justify-between text-sm text-richblack-200">
-              <span>Total</span>
+              <span>Base Price</span>
               <span className="text-richblack-5">Rs. {total}/-</span>
+            </div>
+
+            <div className="flex items-center justify-between text-sm text-richblack-200">
+              <span>GST & Platform Fee</span>
+              <span className="text-richblack-5">Rs. {taxAmount}/-</span>
+            </div>
+
+            <div className="mt-1 flex items-center justify-between border-t border-richblack-700 pt-2 text-base font-semibold text-yellow-50">
+              <span>Total Amount</span>
+              <span>Rs. {grandTotal}/-</span>
             </div>
 
             <button
               onClick={handlePay}
               className="mt-2 w-full rounded-md bg-yellow-50 px-6 py-3 font-semibold text-richblack-900 hover:scale-95 transition-all"
             >
-              Pay Rs. {payAmount}
+              Pay Rs. {grandTotal}
             </button>
           </div>
         </div>

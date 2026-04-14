@@ -2,6 +2,15 @@ import React from 'react'
 import { FaShareSquare } from 'react-icons/fa'
 import { BsFillCaretRightFill } from 'react-icons/bs'
 import { toast } from 'react-hot-toast'
+import fallbackImg from "../../../assets/Images/login.jpg"
+
+// Fallback logic for broken Unsplash links in the demo DB
+const getValidThumbnail = (url) => {
+  if (!url) return fallbackImg;
+  if (url.includes("1515879218367")) return "https://images.unsplash.com/photo-1542831371-29b0f74f9713?w=800&q=80"; 
+  if (url.includes("1558618666")) return "https://images.unsplash.com/photo-1530836369250-ef71a3a58910?w=800&q=80";
+  return url;
+}
 
 // Notice we added handleAddToCart and handleBuyCourse as props here!
 const CourseBuyCard = ({ course, handleAddToCart, handleBuyCourse }) => {
@@ -15,9 +24,13 @@ const CourseBuyCard = ({ course, handleAddToCart, handleBuyCourse }) => {
         <div className='flex flex-col gap-4 rounded-xl bg-richblack-700 p-4 text-richblack-5 shadow-lg'>
             
             <img 
-                src={course?.thumbnail} 
+                src={getValidThumbnail(course?.thumbnail)} 
                 alt="course thumbnail" 
-                className='max-h-[300px] min-h-[180px] w-full rounded-xl object-cover' 
+                className='max-h-[300px] min-h-[180px] w-full rounded-xl object-cover'
+                onError={(e) => {
+                    e.target.onerror = null
+                    e.target.src = fallbackImg
+                }}
             />
             
             <div className='flex flex-col gap-4 px-2'>

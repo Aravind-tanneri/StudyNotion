@@ -44,22 +44,7 @@ export async function buyCourse(token, courses, userDetails, navigate, dispatch)
       throw new Error(orderResponse.data.message)
     }
 
-    // --- MOCK BYPASS FOR OUR TESTING ---
-    // Because our backend is returning a fake 'order_id', Razorpay will crash. 
-    // We catch the fake ID and immediately send dummy data to our verification function.
-    if (orderResponse.data.orderId.startsWith("order_")) {
-      const dummyResponse = {
-        razorpay_order_id: orderResponse.data.orderId,
-        razorpay_payment_id: `pay_${Date.now()}`,
-        razorpay_signature: "mocked_signature_for_testing"
-      }
-      
-      // We skip the UI and manually force the verification step
-      verifyPayment({ ...dummyResponse, courses }, token, navigate, dispatch)
-      toast.dismiss(toastId)
-      return
-    }
-    // --- END MOCK BYPASS ---
+
 
     // We prepare the configuration options for our live Razorpay modal
     const options = {

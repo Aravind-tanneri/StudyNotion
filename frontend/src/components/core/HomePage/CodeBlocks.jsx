@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { FaArrowRight } from "react-icons/fa"
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import CTAButton from './Button'
 
 const CodeBlocks = ({
     position, heading, subheading, ctaBtn1, ctaBtn2, codeblock, backgroundGradient, codeColor
@@ -47,17 +48,17 @@ const CodeBlocks = ({
     
             <div className='flex gap-7 mt-7'>
                 {/* CTA Button 1 */}
-                <button className={"btn-grad"}>
+                <CTAButton active={ctaBtn1.active} linkto={ctaBtn1.linkto}>
                     <div className='flex items-center gap-2'>
                         {ctaBtn1.btnText}
                         <FaArrowRight/>
                     </div>
-                </button>
+                </CTAButton>
 
                 {/* CTA Button 2 */}
-                <button className={"btn-dark text-normal"}>
+                <CTAButton active={ctaBtn2.active} linkto={ctaBtn2.linkto}>
                     {ctaBtn2.btnText}
-                </button>
+                </CTAButton>
             </div>
           </div>
     

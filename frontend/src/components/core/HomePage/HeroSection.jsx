@@ -28,12 +28,12 @@ const HeroSection = () => {
 
       {/* CTA Buttons */}
       <div className='flex flex-row gap-7 mt-8'>
-        <Link to="/signup">
+        <Link to="/about">
           <button className='btn-grad'>
             Learn More
           </button>
         </Link>
-        <Link to="/login">
+        <Link to="/signup">
           <button className='btn-dark'>
             Book a Demo
           </button>

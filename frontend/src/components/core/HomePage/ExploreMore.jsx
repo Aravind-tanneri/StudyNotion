@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import CourseCard from './CourseCard'
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FaArrowRight } from 'react-icons/fa';
+
 const tabsName = [
     "Free", "New to coding", "Most popular", "Skills paths", "Career paths"
 ];
@@ -125,19 +126,14 @@ const HomePageExplore = [
 ];
 
 const ExploreMore = () => {
-    // State to track which Tab is selected
-    const [currentTab, setCurrentTab] = useState(tabsName[0]);
-    // State to track which Courses to show based on the Tab
+    const [currentTab, setCurrentTab] = useState(HomePageExplore[0].tag);
     const [courses, setCourses] = useState(HomePageExplore[0].courses);
-    // State to track which Card is highlighted (defaults to the first card's heading)
     const [currentCard, setCurrentCard] = useState(HomePageExplore[0].courses[0].heading);
 
-    // Function to handle Tab Switching
     const setMyCards = (value) => {
         setCurrentTab(value);
         const result = HomePageExplore.filter((course) => course.tag === value);
-        // Only update if data exists for that tab
-        if(result.length > 0) {
+        if (result.length > 0) {
             setCourses(result[0].courses);
             setCurrentCard(result[0].courses[0].heading);
         }
@@ -145,7 +141,7 @@ const ExploreMore = () => {
 
   return (
     <div className='relative w-full flex flex-col items-center mt-10 z-10'>
-        {/* Headings */}
+        {/* Headings Section */}
         <div className='text-4xl font-semibold text-center text-white'>
             Unlock the <span className='text-blue-gradient'>Power of Code</span>
         </div>
@@ -154,15 +150,15 @@ const ExploreMore = () => {
         </p>
 
         {/* Tabs Menu */}
-        <div className='hidden lg:flex gap-5 mt-5 mx-auto w-max bg-richblack-800 text-richblack-200 p-1 rounded-full font-medium drop-shadow-[0_1.5px_rgba(255,255,255,0.25)]'>
+        <div className='flex gap-1 md:gap-5 mt-5 mx-auto bg-richblack-800 text-richblack-200 p-1 md:p-2 rounded-full font-medium drop-shadow-[0_1.5px_rgba(255,255,255,0.25)] flex-wrap justify-center shadow-md shadow-[#2C333F]'>
             {tabsName.map((element, index) => (
                 <div 
                     key={index} 
-                    className={`text-[16px] flex flex-row items-center gap-2 
+                    className={`text-[12px] md:text-[16px] flex flex-row items-center gap-2 
                         ${currentTab === element 
-                            ? "bg-richblack-900 text-richblack-5 font-medium" 
+                            ? "bg-richblack-900 text-richblack-5 font-medium shadow-[#2C333F]" 
                             : "text-richblack-200 hover:bg-richblack-900 hover:text-richblack-5"} 
-                        rounded-full transition-all duration-200 cursor-pointer px-7 py-2`}
+                        rounded-full transition-all duration-200 cursor-pointer px-3 md:px-7 py-2`}
                     onClick={() => setMyCards(element)}
                 >
                     {element}
@@ -170,31 +166,38 @@ const ExploreMore = () => {
             ))}
         </div>
 
-        {/* Spacer to push everything down so cards overlap the white section later */}
-        <div className='hidden lg:block h-[250px]'></div>
+        {/* Height Spacer for Desktop Overlap */}
+        <div className='hidden lg:block h-[80px]'></div>
 
         {/* Cards Grid */}
-        <div className='lg:absolute bottom-0  left-[50%] px-[10px] pt-10 lg:-translate-x-[50%] lg:translate-y-[50%] text-black flex flex-wrap gap-10 w-full justify-center'>
-            {courses.map((element, index) => (
-                <CourseCard 
-                    key={index}
-                    cardData={element}
-                    currentCard={currentCard}
-                    setCurrentCard={setCurrentCard}
-                />
-            ))}
-            <div className='flex flex-row gap-7 w-full justify-center text-white'>
-                <button className='btn-grad flex items-center gap-2'>
-                    Explore Full Catalog
-                    <FaArrowRight />
+        <div className='flex flex-wrap gap-10 justify-center lg:gap-0 lg:justify-between w-9/10 text-black mb-7 lg:mb-0 mt-10 lg:mt-0'>
+            {courses.length > 0 ? (
+                courses.map((element, index) => (
+                    <CourseCard 
+                        key={index}
+                        cardData={element}
+                        currentCard={currentCard}
+                        setCurrentCard={setCurrentCard}
+                    />
+                ))
+            ) : (
+                <div className="text-white text-xl">Loading courses...</div>
+            )}
+        </div>
+
+        {/* Buttons (Desktop & Mobile Unified Flow) */}
+        <div className='mt-5 lg:mt-[160px] lg:mb-[-120px] pb-10 flex flex-row gap-5 w-full justify-center text-white'>
+            <Link to="/catalog/web-development">
+                <button className='btn-grad flex items-center justify-center gap-2 text-[14px] md:text-[16px] py-2 md:py-3 px-4 md:px-6'>
+                    Explore Full Catalog <FaArrowRight />
                 </button>
-                <button className='btn-dark'>
+            </Link>
+            <Link to="/signup">
+                <button className='btn-dark flex items-center justify-center text-[14px] md:text-[16px] py-2 md:py-3 px-4 md:px-6'>
                     Learn More
                 </button>
-            </div>
+            </Link>
         </div>
-        
-        
     </div>
   )
 }

@@ -5,39 +5,39 @@ import { removeFromCart } from "../../../slices/cartSlice"
 import RatingStars from "../../common/RatingStars"
 import { getAverageRating, getRatingCount } from "../../../utils/ratings"
 
-export default function Wishlist() {
-  const { cart: wishlist, total, totalItems } = useSelector((state) => state.cart)
+export default function Cart() {
+  const { cart, total, totalItems } = useSelector((state) => state.cart)
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
   return (
     <div className="w-full text-white">
       <p className="mb-3 text-sm text-richblack-300">
-        Home / Dashboard / <span className="text-yellow-50">Wishlist</span>
+        Home / Dashboard / <span className="text-yellow-50">Cart</span>
       </p>
 
-      <h1 className="text-3xl font-medium text-richblack-5">My Wishlist</h1>
+      <h1 className="text-3xl font-medium text-richblack-5">My Cart</h1>
 
       <p className="mt-6 text-sm text-richblack-300">
-        {totalItems} Courses in Wishlist
+        {totalItems} Courses in Cart
       </p>
 
       {totalItems === 0 ? (
         <p className="mt-14 text-center text-3xl text-richblack-100">
-          Your wishlist is empty
+          Your cart is empty
         </p>
       ) : (
         <div className="mt-8 flex flex-col gap-8 lg:flex-row lg:items-start">
-          {/* Left list */}
+          {/* List of courses in cart */}
           <div className="flex-1 rounded-xl border border-richblack-800">
-            {wishlist.map((course, idx) => {
+            {cart.map((course, idx) => {
               const avgRating = getAverageRating(course?.ratingAndReviews)
               const reviewCount = getRatingCount(course?.ratingAndReviews)
               return (
                 <div
                   key={course?._id || idx}
                   className={`flex flex-col gap-6 px-6 py-6 lg:flex-row lg:items-center ${
-                    idx !== wishlist.length - 1 ? "border-b border-richblack-800" : ""
+                    idx !== cart.length - 1 ? "border-b border-richblack-800" : ""
                   }`}
                 >
                   <div className="flex flex-1 flex-col gap-5 sm:flex-row">
@@ -51,7 +51,7 @@ export default function Wishlist() {
                         {course?.courseName}
                       </p>
                       <p className="text-sm text-richblack-300">
-                        {course?.instructor?.name || "Name"}
+                        {course?.instructor?.name || "Instructor Name"}
                       </p>
                       <div className="flex items-center gap-2 text-sm">
                         <span className="text-yellow-50 font-semibold">
@@ -59,7 +59,7 @@ export default function Wishlist() {
                         </span>
                         <RatingStars value={avgRating} />
                         <span className="text-richblack-400">
-                          ({reviewCount} Review Count)
+                          ({reviewCount} Reviews)
                         </span>
                       </div>
                       <p className="text-xs text-richblack-400">
@@ -85,7 +85,7 @@ export default function Wishlist() {
             })}
           </div>
 
-          {/* Right total card */}
+          {/* Checkout Card */}
           <div className="w-full max-w-[360px] rounded-xl border border-richblack-800 bg-richblack-800 p-6">
             <p className="text-sm text-richblack-300">Total:</p>
             <div className="mt-2">
@@ -97,7 +97,7 @@ export default function Wishlist() {
 
             <button
               onClick={() => navigate("/dashboard/checkout")}
-              className="mt-6 w-full rounded-md bg-yellow-50 px-6 py-3 font-semibold text-richblack-900 hover:scale-95 transition-all"
+              className="mt-6 w-full rounded-md bg-yellow-50 px-6 py-3 font-semibold text-richblack-900 hover:scale-95 transition-all text-center"
             >
               Buy Now
             </button>
@@ -107,4 +107,3 @@ export default function Wishlist() {
     </div>
   )
 }
-

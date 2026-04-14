@@ -19,7 +19,7 @@ const sidebarLinks = {
   ],
   student: [
     { id: 4, name: "Enrolled Courses", path: "/dashboard/enrolled-courses", icon: "VscMortarBoard" },
-    { id: 5, name: "Wishlist", path: "/dashboard/wishlist", icon: "VscHeart" },
+    { id: 5, name: "Cart", path: "/dashboard/cart", icon: "VscArchive" },
     { id: 6, name: "Purchase History", path: "/dashboard/purchase-history", icon: "VscHistory" },
     { id: 7, name: "Courses", path: "/dashboard/courses", icon: "VscBook" },
   ],
