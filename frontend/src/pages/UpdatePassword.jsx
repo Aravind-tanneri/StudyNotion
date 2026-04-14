@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useMemo, useState } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 import { BiArrowBack } from 'react-icons/bi'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
@@ -21,24 +21,15 @@ const UpdatePassword = () => {
   const { loading } = useSelector((state) => state.auth)
 
   // State to track our 5 specific password requirements
-  const [validations, setValidations] = useState({
-    lowercase: false,
-    special: false,
-    uppercase: false,
-    minChar: false,
-    number: false,
-  })
-
-  // Watch the password field and update validations dynamically
-  useEffect(() => {
+  const validations = useMemo(() => {
     const pass = formData.password
-    setValidations({
+    return {
       lowercase: /[a-z]/.test(pass),
       uppercase: /[A-Z]/.test(pass),
       number: /[0-9]/.test(pass),
       special: /[^a-zA-Z0-9]/.test(pass), // Checks for any character that is NOT a letter or number
       minChar: pass.length >= 8,
-    })
+    }
   }, [formData.password])
 
   const allValid = useMemo(

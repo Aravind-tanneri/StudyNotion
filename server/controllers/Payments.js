@@ -147,3 +147,28 @@ exports.verifySignature = async (req, res) => {
         });
     }
 };
+
+exports.sendPaymentSuccessEmail = async (req, res) => {
+    const { orderId, paymentId, amount } = req.body;
+    const userId = req.user.id;
+
+    if (!orderId || !paymentId || !amount || !userId) {
+        return res.status(400).json({ success: false, message: "Please provide all the details" });
+    }
+
+    try {
+        const enrolledStudent = await User.findById(userId);
+        await mailSender(
+            enrolledStudent.email,
+            `Payment Received`,
+            `<h1>Payment Successful</h1>
+             <p>Your payment of Rs. ${amount / 100} has been received.</p>
+             <p>Order ID: ${orderId}</p>
+             <p>Payment ID: ${paymentId}</p>`
+        );
+        return res.status(200).json({ success: true, message: "Email Sent" });
+    } catch (error) {
+        console.log("Error in sending mail", error);
+        return res.status(500).json({ success: false, message: "Could not send email" });
+    }
+};

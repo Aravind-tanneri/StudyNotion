@@ -1,12 +1,10 @@
 import * as Icons from "react-icons/vsc"
-import { useDispatch } from "react-redux"
 import { NavLink, matchPath, useLocation } from "react-router-dom"
 
 export default function SidebarLink({ link, iconName }) {
   // We dynamically grab the correct icon from react-icons/vsc based on the string name
   const Icon = Icons[iconName]
   const location = useLocation()
-  const dispatch = useDispatch()
 
   // This checks if our current browser URL matches this specific link's path
   const matchRoute = (route) => {

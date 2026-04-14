@@ -17,7 +17,6 @@ export default function CourseDetails() {
     const { user } = useSelector((state) => state.profile)
     const { token } = useSelector((state) => state.auth)
     const { loading } = useSelector((state) => state.profile)
-    const { paymentLoading } = useSelector((state) => state.course)
     
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -36,7 +35,7 @@ export default function CourseDetails() {
                 const res = await fetchCourseDetails(courseId)
                 setCourseData(res?.data?.courseDetails)
             } catch (error) {
-                console.log("Could not fetch Course Details")
+                console.log("Could not fetch Course Details", error)
             }
         }
         getCourseSpecificDetails()

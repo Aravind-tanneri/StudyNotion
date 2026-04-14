@@ -3,7 +3,7 @@ import { AiOutlineCaretDown } from "react-icons/ai";
 import { VscDashboard, VscSignOut } from "react-icons/vsc";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-
+import { logout } from "../../../services/operations/authAPI";
 // Standard implementation for a profile dropdown menu
 export default function ProfileDropdown() {
   const { user } = useSelector((state) => state.profile);

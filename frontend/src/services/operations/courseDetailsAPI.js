@@ -258,10 +258,9 @@ export const createSubSection=async (data,token)=>{
   }catch(error){
     console.log("Create subsectionAPI error..",error);
     toast.error(error.message);
-  }finally{
-    toast.dismiss(toastId)
-    return result
   }
+  toast.dismiss(toastId)
+  return result
 }
 
 
@@ -289,10 +288,9 @@ export const updateSubSection= async (data,token)=>{
   }catch(error){
     console.log("Update subsectionAPI error..",error)
     toast.error(error.message)
-  }finally{
-    toast.dismiss(toastId)
-    return result
   }
+  toast.dismiss(toastId)
+  return result
 }
 
 

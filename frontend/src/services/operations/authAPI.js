@@ -3,6 +3,7 @@ import { setLoading, setToken } from "../../slices/authSlice"
 import { apiConnector } from "../apiconnector"
 import { endpoints } from "../apis"
 
+
 const { SENDOTP_API, SIGNUP_API, LOGIN_API, RESETPASSTOKEN_API, RESETPASSWORD_API } = endpoints
 
 export function sendOtp(email, navigate) {

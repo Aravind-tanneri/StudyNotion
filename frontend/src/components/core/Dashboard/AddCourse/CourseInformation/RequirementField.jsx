@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-const RequirementField = ({ name, label, register, errors, setValue, getValues }) => {
+const RequirementField = ({ name, label, register, errors, setValue }) => {
     const [requirement, setRequirement] = useState("");
     const [requirementsList, setRequirementsList] = useState([]);
 

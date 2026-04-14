@@ -12,17 +12,17 @@ exports.updateProfile = async (req, res) => {
             return res.status(400).json({ success: false, message: "Missing required fields" });
         }
         const userDetails = await User.findById(id);
-        const profileId = userDetails.additionalDetails;
+        const profileId = userDetails.profile;
         const profileDetails = await Profile.findById(profileId);
 
-        profileDetails.dateOfBirth = dateOfBirth;
+        profileDetails.dob = dateOfBirth;
         profileDetails.about = about;
         profileDetails.gender = gender;
         profileDetails.contactNumber = contactNumber;
 
         await profileDetails.save();
 
-        const updatedUserDetails = await User.findById(id).populate("additionalDetails").exec();
+        const updatedUserDetails = await User.findById(id).populate("profile").exec();
 
         return res.status(200).json({
             success: true,
@@ -51,7 +51,7 @@ exports.updateDisplayPicture = async (req, res) => {
             { _id: userId },
             { image: image.secure_url },
             { new: true }
-        ).populate("additionalDetails").exec();
+        ).populate("profile").exec();
 
         res.send({
             success: true,
@@ -105,4 +105,46 @@ exports.instructorDashboard = async (req, res) => {
       message: "Internal Server Error",
     });
   }
+};
+
+exports.deleteAccount = async (req, res) => {
+    try {
+        const id = req.user.id;
+        const user = await User.findById({ _id: id });
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+        await Profile.findByIdAndDelete({ _id: user.profile });
+        
+        // TODO: Unenroll user from all enrolled courses
+        
+        await User.findByIdAndDelete({ _id: id });
+        res.status(200).json({ success: true, message: "User deleted successfully" });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "User cannot be deleted successfully" });
+    }
+};
+
+exports.getAllUserDetails = async (req, res) => {
+    try {
+        const id = req.user.id;
+        const userDetails = await User.findById(id).populate("profile").exec();
+        res.status(200).json({ success: true, message: "User Data fetched successfully", data: userDetails });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+exports.getEnrolledCourses = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        let userDetails = await User.findOne({ _id: userId }).populate("courses").exec();
+        if (!userDetails) {
+            return res.status(400).json({ success: false, message: `Could not find user with id: ${userId}` });
+        }
+        return res.status(200).json({ success: true, data: userDetails.courses });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
 };

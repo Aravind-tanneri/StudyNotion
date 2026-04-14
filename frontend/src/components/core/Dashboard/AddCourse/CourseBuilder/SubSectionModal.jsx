@@ -3,8 +3,8 @@ import { useForm } from "react-hook-form"
 import { toast } from "react-hot-toast"
 import { RxCross2 } from "react-icons/rx"
 import { useDispatch, useSelector } from "react-redux"
-import { setCourse } from "../../../../slices/courseSlice"
-import { createSubSection, updateSubSection } from "../../../../services/operations/courseDetailsAPI"
+import { setCourse } from "../../../../../slices/courseSlice"
+import { createSubSection } from "../../../../../services/operations/courseDetailsAPI"
 import Upload from "../CourseInformation/Upload" 
 
 export default function SubSectionModal({
@@ -27,7 +27,7 @@ export default function SubSectionModal({
       setValue("lectureDesc", modalData.description)
       setValue("lectureVideo", modalData.videoUrl)
     }
-  }, [])
+  }, [view, edit, modalData.title, modalData.description, modalData.videoUrl, setValue])
 
   // 2. Logic to detect if the form has actually changed (for Editing)
   const isFormUpdated = () => {

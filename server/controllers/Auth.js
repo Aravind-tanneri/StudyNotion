@@ -78,6 +78,8 @@ exports.signup = async (req, res) => {
             contactNumber: null,
         });
 
+        const userImage = `https://api.dicebear.com/5.x/initials/svg?seed=${name}`;
+
         const user = await User.create({
             name,
             email,
@@ -85,6 +87,7 @@ exports.signup = async (req, res) => {
             accountType,
             contactNumber,
             profile: profileDetails._id,
+            image: userImage,
         });
 
         return res.status(200).json({
@@ -225,5 +228,45 @@ exports.resetPassword = async (req, res) => {
     } catch (error) {
         console.error("RESET PASSWORD ERROR:", error);
         return res.status(500).json({ success: false, message: "Could not reset password." });
+    }
+};
+
+exports.changePassword = async (req, res) => {
+    try {
+        const userDetails = await User.findById(req.user.id);
+        const { oldPassword, newPassword } = req.body;
+        const isPasswordMatch = await bcrypt.compare(oldPassword, userDetails.password);
+        if (!isPasswordMatch) {
+            return res.status(401).json({ success: false, message: "Old Password does not match" });
+        }
+        const encryptedPassword = await bcrypt.hash(newPassword, 10);
+        const updatedUserDetails = await User.findByIdAndUpdate(
+            req.user.id,
+            { password: encryptedPassword },
+            { new: true }
+        );
+        try {
+            const emailResponse = await mailSender(
+                updatedUserDetails.email,
+                "Password for your account has been updated",
+                "Password updated successfully"
+            );
+            console.log("Email sent successfully:", emailResponse);
+        } catch (error) {
+            console.error("Error in sending email:", error);
+            return res.status(500).json({
+                success: false,
+                message: "Error in sending email",
+                error: error.message,
+            });
+        }
+        return res.status(200).json({ success: true, message: "Password updated successfully" });
+    } catch (error) {
+        console.error("Error in updating password:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Error in updating password",
+            error: error.message,
+        });
     }
 };

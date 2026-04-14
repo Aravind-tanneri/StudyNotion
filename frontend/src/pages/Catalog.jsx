@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useMemo } from "react"
 import { useParams } from "react-router-dom"
 
 // API & Service Imports
@@ -16,8 +16,6 @@ const Catalog = () => {
   const [catalogPageData, setCatalogPageData] = useState(null)
   const [categoryId, setCategoryId] = useState("")
   const [activeTab, setActiveTab] = useState(1) // State for Most Popular / New / Trending tabs
-  const [tabCourses, setTabCourses] = useState([])
-
   // 1. Fetch all categories to find the ID that matches our URL slug
   useEffect(() => {
     const getCategories = async () => {
@@ -53,7 +51,7 @@ const Catalog = () => {
   }, [categoryId])
 
   // 3. Update tab course list whenever data/tab changes
-  useEffect(() => {
+  const tabCourses = useMemo(() => {
     const courses = catalogPageData?.data?.selectedCategory?.courses || []
     let sorted = [...courses]
 
@@ -78,7 +76,7 @@ const Catalog = () => {
       })
     }
 
-    setTabCourses(sorted)
+    return sorted
   }, [catalogPageData, activeTab])
 
   // Loading State

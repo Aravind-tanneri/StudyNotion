@@ -12,13 +12,13 @@ export default function PublishCourse(){
     const navigate=useNavigate()
     const {token }=useSelector((state)=> state.auth)
     const {course}= useSelector((state)=>state.course)
-    const [loading,setLoading]=useSelector(false)
+    const [loading,setLoading]=useState(false)
 
     useEffect(()=>{
         if(course?.status==="Published"){
             setValue("public",true)
         }
-    },[])
+    },[course?.status, setValue])
 
     const goBack=()=>{
         dispatch(setStep(2))

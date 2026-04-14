@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react"
+import React, { useEffect, useState } from "react"
 import { Link, matchPath, useLocation } from "react-router-dom"
 import { useSelector } from "react-redux"
 import { AiOutlineClose, AiOutlineMenu, AiOutlineShoppingCart } from "react-icons/ai"
@@ -38,10 +38,12 @@ export default function Navbar() {
   }, [])
 
   // Close mobile menu on route change
-  useEffect(() => {
+  const [prevLocation, setPrevLocation] = useState(location.pathname)
+  if (location.pathname !== prevLocation) {
+    setPrevLocation(location.pathname)
     setIsMenuOpen(false)
     setIsCatalogOpen(false)
-  }, [location.pathname])
+  }
 
   // Lock body scroll when mobile menu open
   useEffect(() => {
@@ -163,7 +165,7 @@ export default function Navbar() {
 
       {/* Mobile Menu Drawer */}
       {isMenuOpen && (
-        <div className="fixed inset-0 z-[2000] md:hidden relative">
+        <div className="fixed inset-0 z-[2000] md:hidden">
           {/* Backdrop */}
           <button
             className="absolute inset-0 z-0 h-full w-full bg-richblack-900/70"

@@ -63,7 +63,7 @@ export async function buyCourse(token, courses, userDetails, navigate, dispatch)
 
     // We prepare the configuration options for our live Razorpay modal
     const options = {
-      key: process.env.REACT_APP_RAZORPAY_KEY,
+      key: import.meta.env.VITE_RAZORPAY_KEY,
       currency: orderResponse.data.currency,
       amount: orderResponse.data.amount,
       order_id: orderResponse.data.orderId,

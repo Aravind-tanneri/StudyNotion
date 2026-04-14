@@ -29,7 +29,7 @@ export default function InstructorChart({ courses }) {
   }))
 
   // We map our random colors to however many courses the instructor has
-  const COLORS = getRandomColors(courses.length)
+  const [COLORS] = useState(() => getRandomColors(courses.length))
 
   // We determine which dataset to feed into our chart based on the active button
   const chartData = currChart === "students" ? chartDataForStudents : chartDataForIncome

@@ -45,12 +45,10 @@ app.listen(PORT,"0.0.0.0", () => {
 });
 
 
-//self ping
-
-const URL = "https://studynotion-ulxv.onrender.com";
-
-setInterval(() => {
-  axios.get(URL)
-    .then(() => console.log("Self-ping successful! Server is awake."))
-    .catch((err) => console.error("Self-ping failed:", err.message));
-}, 14 * 60 * 1000); // 14 minutes in milliseconds
+//self ping (only for production on Render)
+// const URL = "https://studynotion-ulxv.onrender.com";
+// setInterval(() => {
+//   fetch(URL)
+//     .then(() => console.log("Self-ping successful! Server is awake."))
+//     .catch((err) => console.error("Self-ping failed:", err.message));
+// }, 14 * 60 * 1000);

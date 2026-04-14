@@ -6,7 +6,7 @@ const tabsName = [
     "Free", "New to coding", "Most popular", "Skills paths", "Career paths"
 ];
 
-export const HomePageExplore = [
+const HomePageExplore = [
     {
         tag: 'Free',
         courses: [

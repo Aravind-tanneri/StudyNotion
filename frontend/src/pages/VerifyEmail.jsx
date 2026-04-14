@@ -23,11 +23,10 @@ const VerifyEmail = () => {
     const handleOnSubmit = (e) => {
         e.preventDefault()
         
-        // Updated destructuring to match our new Signup form fields (firstName, lastName)
         const { accountType, firstName, lastName, email, password, confirmPassword, contactNumber } = signupData
         
         dispatch(
-            signUp(accountType, firstName, lastName, email, password, confirmPassword, contactNumber, otp, navigate)
+            signUp(accountType, `${firstName} ${lastName}`, email, password, confirmPassword, contactNumber, otp, navigate)
         )
     }
 
