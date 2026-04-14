@@ -46,6 +46,8 @@ app.listen(PORT,"0.0.0.0", () => {
     console.log(`App is running successfully at port ${PORT}`);
 });
 
+module.exports = app;
+
 
 //self ping (only for production on Render)
 // const URL = "https://studynotion-ulxv.onrender.com";
