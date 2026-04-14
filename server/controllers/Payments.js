@@ -35,7 +35,7 @@ exports.capturePayment = async (req, res) => {
                     return res.status(400).json({ success: false, message: "Student is already enrolled in one of the courses." });
                 }
 
-                totalAmount += course.price;
+                totalAmount += Number(course.price);
             } catch (error) {
                 console.error("Error finding course inside loop:", error);
                 return res.status(500).json({ success: false, message: error.message });
@@ -43,8 +43,10 @@ exports.capturePayment = async (req, res) => {
         }
 
         const currency = "INR";
+        const finalAmount = totalAmount + Math.round(totalAmount * 0.0167); // Adding 1.67% GST & Fees
+        
         const options = {
-            amount: totalAmount * 100, // Convert to Paisa
+            amount: finalAmount * 100, // Convert to Paisa
             currency,
             receipt: `RCPT_${Date.now()}_${Math.floor(Math.random() * 1000)}`,
         };

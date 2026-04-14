@@ -1,3 +1,5 @@
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
@@ -12,7 +14,7 @@ const profileRoutes = require("./routes/Profile");
 
 const cors = require("cors");
 
-require("dotenv").config();
+
 const PORT = process.env.PORT || 4000;
 
 database.connect();

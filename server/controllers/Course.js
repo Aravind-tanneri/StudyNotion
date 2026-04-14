@@ -257,11 +257,16 @@ exports.updateCourseProgress = async (req, res) => {
 exports.getCategoryPageDetails = async (req, res) => {
     try {
         const { categoryId } = req.body;
+
+        // Fetch selected category and populate all courses (no status filter - seed data has no status)
         const selectedCategory = await Tag.findById(categoryId)
             .populate({
                 path: "course",
-                match: { status: "Published" },
-                populate: ["ratingAndReviews", "instructor"],
+                populate: [
+                    { path: "ratingAndReviews", populate: { path: "user", select: "name image" } },
+                    { path: "instructor", select: "name image" },
+                    { path: "tag", select: "name" },
+                ],
             })
             .exec();
 
@@ -269,26 +274,37 @@ exports.getCategoryPageDetails = async (req, res) => {
             return res.status(404).json({ success: false, message: "Category not found" });
         }
 
-        const differentCategories = await Tag.find({ _id: { $ne: categoryId } })
+        // Fetch a different (random) category to use as "differentCategory"
+        const otherCategories = await Tag.find({ _id: { $ne: categoryId } })
             .populate({
                 path: "course",
-                match: { status: "Published" },
-                populate: ["ratingAndReviews", "instructor"],
+                populate: [
+                    { path: "ratingAndReviews", populate: { path: "user", select: "name image" } },
+                    { path: "instructor", select: "name image" },
+                    { path: "tag", select: "name" },
+                ],
             })
             .exec();
 
-        // Get top selling courses
-        const allCourses = await Course.find({})
-            .populate("ratingAndReviews")
-            .populate("instructor");
+        // Pick a random category that has at least one course
+        const categoriesWithCourses = otherCategories.filter(c => c.course && c.course.length > 0);
+        const differentCategory = categoriesWithCourses.length > 0
+            ? categoriesWithCourses[Math.floor(Math.random() * categoriesWithCourses.length)]
+            : otherCategories[0] || null;
 
-        const mostSellingCourses = allCourses
+        // Get top selling courses across all categories
+        const allCourses = await Course.find({})
+            .populate({ path: "ratingAndReviews", populate: { path: "user", select: "name image" } })
+            .populate({ path: "instructor", select: "name image" })
+            .populate({ path: "tag", select: "name" });
+
+        const mostSellingCourses = [...allCourses]
             .sort((a, b) => b.studentsEnrolled.length - a.studentsEnrolled.length)
             .slice(0, 10);
 
         return res.status(200).json({
             success: true,
-            data: { selectedCategory, differentCategories, mostSellingCourses },
+            data: { selectedCategory, differentCategory, mostSellingCourses },
         });
     } catch (error) {
         return res.status(500).json({ success: false, message: "Internal server error", error: error.message });
