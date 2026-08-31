@@ -12,7 +12,6 @@ export default function RenderTotalAmount() {
   const handleBuyCourse = () => {
     const courses = cart.map((course) => course._id)
     
-    console.log("Triggering Payment Gateway for courses:", courses)
     // TODO: Integrate Razorpay API
     dispatch(buyCourse(token, courses, user, navigate, dispatch))
   }

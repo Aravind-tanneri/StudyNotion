@@ -34,13 +34,12 @@ export default function ViewCourse() {
     }
     
     setCourseSpecificDetails()
-    console.log("Fetching View Course Data for ID:", courseId)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
     <>
-      <div className="relative flex min-h-[calc(100vh-3.5rem)]">
+      <div className="relative mt-14 flex min-h-[calc(100vh-3.5rem)]">
         {/* The Sidebar with the list of videos */}
         <VideoDetailsSidebar setReviewModal={setReviewModal} />
         

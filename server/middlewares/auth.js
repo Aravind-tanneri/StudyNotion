@@ -12,7 +12,6 @@ exports.auth = async (req, res, next) => {
 
         try {
             const decode = jwt.verify(token, process.env.JWT_SECRET);
-            console.log("Decoded Token:", decode);
             req.user = decode;
         } catch (error) {
             return res.status(401).json({ success: false, message: "Token is invalid." });
@@ -49,6 +48,17 @@ exports.isAdmin = async (req, res, next) => {
     try {
         if (req.user.accountType !== "Admin") {
             return res.status(401).json({ success: false, message: "This is a protected route for Admins only." });
+        }
+        next();
+    } catch (error) {
+        return res.status(500).json({ success: false, message: "User role cannot be verified." });
+    }
+};
+
+exports.isInstructorOrAdmin = async (req, res, next) => {
+    try {
+        if (req.user.accountType !== "Instructor" && req.user.accountType !== "Admin") {
+            return res.status(401).json({ success: false, message: "This is a protected route for Instructors and Admins only." });
         }
         next();
     } catch (error) {

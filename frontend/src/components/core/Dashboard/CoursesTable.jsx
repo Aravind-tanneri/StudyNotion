@@ -25,7 +25,6 @@ const CoursesTable = ({ courses, setCourses }) => {
 
             setConfirmationModal(null)
             setLoading(false)
-            console.log("Course Deleted: ",courseId)
     }
 
   return (

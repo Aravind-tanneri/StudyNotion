@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react'
 
-const RequirementField = ({ name, label, register, errors, setValue }) => {
+const RequirementField = ({ name, label, register, errors, setValue, editCourse = false, defaultValue = [] }) => {
     const [requirement, setRequirement] = useState("");
-    const [requirementsList, setRequirementsList] = useState([]);
+    const [requirementsList, setRequirementsList] = useState(defaultValue);
 
     useEffect(() => {
         register(name, {
-            required: true,
-            validate: (value) => value.length > 0
+            required: !editCourse,
+            validate: (value) => editCourse || value.length > 0
         });
-    }, [register, name]);
+        setValue(name, requirementsList);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [register, name, editCourse]);
 
     useEffect(() => {
         setValue(name, requirementsList);

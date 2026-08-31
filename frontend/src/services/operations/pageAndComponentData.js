@@ -14,7 +14,6 @@ export const getCategoryPageDetails = async (categoryId) => {
       { categoryId: categoryId }
     )
     
-    console.log("CATALOG PAGE DATA API RESPONSE............", response)
 
     if (!response?.data?.success) {
       throw new Error("Could not Fetch Category page data")
@@ -22,7 +21,6 @@ export const getCategoryPageDetails = async (categoryId) => {
 
     result = response?.data
   } catch (error) {
-    console.log("CATALOG PAGE DATA API ERROR....", error)
     toast.error(error.message)
     result = error.response?.data
   }
@@ -40,7 +38,6 @@ export const getAllRatings = async () => {
     }
     return response?.data?.data || []
   } catch (error) {
-    console.log("GET_ALL_RATING_API ERROR....", error)
     toast.error(error?.response?.data?.message || "Could not fetch ratings")
     return []
   }

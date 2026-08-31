@@ -1,5 +1,5 @@
 import React from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import Navbar from './components/common/Navbar'
 import Home from './pages/Home'
@@ -19,6 +19,7 @@ import CourseDetails from "./pages/CourseDetails"
 import EditCourse from "./components/core/Dashboard/EditCourse"
 import ViewCourse from "./pages/ViewCourse"
 import VideoDetails from "./components/core/ViewCourse/VideoDetails"
+import CourseLauncher from "./components/core/ViewCourse/CourseLauncher"
 import Instructor from "./components/core/Dashboard/Instructor"
 import { useSelector } from 'react-redux'
 import Footer from "./components/common/Footer"
@@ -37,12 +38,17 @@ import Catalog from './pages/Catalog'
 const App = () => {
   
   const { user } = useSelector((state) => state.profile);
+  const location = useLocation();
+  const promoHidden = ["/dashboard", "/view-course"].some((route) => location.pathname.includes(route));
   return (
     <div className="w-screen min-h-screen bg-richblack-900 flex flex-col font-inter">
-      <TopPromoBanner/>
-      <Navbar /> 
-      
-      <Routes>
+      <header className="fixed top-0 left-0 right-0 z-[1000]">
+        <TopPromoBanner/>
+        <Navbar /> 
+      </header>
+
+      <main className={`flex-1 ${promoHidden ? "" : "pt-[5.75rem]"}`}>
+        <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
@@ -52,6 +58,7 @@ const App = () => {
         <Route path="/contact" element={<Contact/>}/>
         <Route path="/forgot-password" element={<ForgotPassword/>} />
         <Route path="/update-password/:token" element={<UpdatePassword />} />
+        <Route path="/catalog" element={<Navigate to="/catalog/web-development" replace />} />
         <Route path="/catalog/:catalogName" element={<Catalog/>} />
 
         {/* Protected Dashboard Routes */}
@@ -75,19 +82,24 @@ const App = () => {
           <Route path="/dashboard/courses" element={<DashboardCoursesRedirect />} />
           <Route element={<ViewCourse />}>
             {user?.accountType === ACCOUNT_TYPE.STUDENT && (
-              <Route 
-                path="view-course/:courseId/section/:sectionId/sub-section/:subSectionId" 
-                element={<VideoDetails />} 
-            />)}
+              <>
+                <Route path="view-course/:courseId" element={<CourseLauncher />} />
+                <Route 
+                  path="view-course/:courseId/section/:sectionId/sub-section/:subSectionId" 
+                  element={<VideoDetails />} 
+                />
+              </>
+            )}
           </Route>
-          {user?.accountType === ACCOUNT_TYPE.INSTRUCTOR && (
+          {user?.accountType === ACCOUNT_TYPE.INSTRUCTOR ||
+            user?.accountType === ACCOUNT_TYPE.ADMIN ? (
             <>
-              <Route path="instructor" element={<Instructor />} />
+              <Route path="/dashboard/instructor" element={<Instructor />} />
             </>
-          )}
+          ) : null}
         </Route>
       </Routes>
-
+      </main>
 
       <Footer/>
           

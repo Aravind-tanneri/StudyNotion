@@ -14,7 +14,7 @@ const getValidThumbnail = (url, courseName) => {
   return url;
 }
 
-const CourseCard = ({ course, Height }) => {
+const CourseCard = ({ course, Height, purchased }) => {
   const instructorName =
     course?.instructor?.name ||
     `${course?.instructor?.firstName || ""} ${course?.instructor?.lastName || ""}`.trim() ||
@@ -31,10 +31,9 @@ const CourseCard = ({ course, Height }) => {
     .slice(0, 2)
 
   return (
-    <>
+    <div className="flex flex-col gap-2 hover:scale-[1.03] transition-all duration-200 group">
       <Link to={`/courses/${course._id}`}>
-        <div className="flex flex-col gap-2 hover:scale-[1.03] transition-all duration-200 group">
-          
+        <div className="flex flex-col gap-2">
           {/* Course Image & Badge */}
           <div className="relative rounded-xl overflow-hidden aspect-video">
             <img
@@ -89,16 +88,24 @@ const CourseCard = ({ course, Height }) => {
                 ))}
               </div>
             )}
-            
-            {/* Price */}
-            <p className="text-lg text-richblack-5 font-bold mt-1">
-              ₹{course?.price?.toLocaleString()}
-            </p>
           </div>
-          
         </div>
       </Link>
-    </>
+
+      {/* Price or Open Course for already purchased */}
+      {purchased ? (
+        <Link
+          to={`/view-course/${course._id}`}
+          className="w-full rounded-md bg-yellow-50 py-2 text-center text-base font-semibold text-richblack-900 hover:scale-95 transition-all duration-200"
+        >
+          Open Course
+        </Link>
+      ) : (
+        <p className="text-lg text-richblack-5 font-bold mt-1">
+          ₹{course?.price?.toLocaleString()}
+        </p>
+      )}
+    </div>
   )
 }
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { Link, matchPath, useLocation } from "react-router-dom"
-import { useSelector } from "react-redux"
+import { Link, matchPath, useLocation, useNavigate } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
 import { AiOutlineClose, AiOutlineMenu, AiOutlineShoppingCart } from "react-icons/ai"
 import { BsChevronDown } from "react-icons/bs"
 
@@ -8,13 +8,18 @@ import logo from "../../assets/Images/logo.png"
 import { NavbarLinks } from "../../data/navbar-links"
 import { apiConnector } from "../../services/apiconnector"
 import { categories } from "../../services/apis"
-import ProfileDropdown from "../core/Auth/ProfileDropdown"
+import { logout } from "../../services/operations/authAPI"
 
 export default function Navbar() {
   const { token } = useSelector((state) => state.auth)
   const { user } = useSelector((state) => state.profile)
   const { totalItems } = useSelector((state) => state.cart)
   const location = useLocation()
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const promoHidden = ["/dashboard", "/view-course"].some((route) => location.pathname.includes(route));
+  const navTop = promoHidden ? "top-0" : "top-[2.25rem]";
 
   const [subLinks, setSubLinks] = useState([])
   const [loading, setLoading] = useState(false)
@@ -30,7 +35,6 @@ export default function Navbar() {
         // We store the fetched categories in our local state
         setSubLinks(res.data.data)
       } catch (error) {
-        console.log("Could not fetch Categories.", error)
       }
       setLoading(false)
     }
@@ -61,7 +65,7 @@ export default function Navbar() {
   }
 
   return (
-    <div className={`flex min-lg:px-[5%] h-14 items-center justify-center border-b-[1px] border-b-richblack-700 bg-richblack-900 transition-all duration-200`}>
+    <div className={`fixed ${navTop} left-0 right-0 z-[1000] flex min-lg:px-[5%] h-14 items-center justify-center border-b-[1px] border-b-white/10 bg-richblack-900/70 backdrop-blur-xl transition-all duration-200`}>
       <div className="flex w-11/12 max-w-maxContent items-center justify-between">
         
         {/* We link our logo back to the home page */}
@@ -145,8 +149,22 @@ export default function Navbar() {
               </button>
             </Link>
           )}
-          {/* We show the Profile Dropdown if they are logged in */}
-          {token !== null && <ProfileDropdown />}
+          {/* We show the Profile buttons if they are logged in */}
+          {token !== null && (
+            <>
+              <Link to="/dashboard/my-profile">
+                <button className="rounded-[8px] border border-richblack-700 bg-richblack-800 px-[12px] py-[8px] text-richblack-100 hover:scale-95 transition-all">
+                  Dashboard
+                </button>
+              </Link>
+              <button
+                onClick={() => dispatch(logout(navigate))}
+                className="rounded-[8px] border border-yellow-50 bg-yellow-50 px-[12px] py-[8px] text-white hover:scale-95 transition-all"
+              >
+                Logout
+              </button>
+            </>
+          )}
         </div>
         
         {/* We add a hamburger menu icon for mobile screens */}
@@ -289,8 +307,24 @@ export default function Navbar() {
                     </Link>
                   </div>
                 ) : (
-                  <div className="rounded-md border border-richblack-700 bg-richblack-800 px-4 py-3">
-                    <ProfileDropdown />
+                  <div className="flex flex-col gap-2">
+                    <Link
+                      to="/dashboard/my-profile"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <button className="w-full rounded-md border border-richblack-700 bg-richblack-800 px-4 py-3 text-sm font-medium text-richblack-100">
+                        Dashboard
+                      </button>
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false)
+                        dispatch(logout(navigate))
+                      }}
+                      className="w-full rounded-md border border-yellow-50 bg-yellow-50 px-4 py-3 text-sm font-semibold text-white"
+                    >
+                      Logout
+                    </button>
                   </div>
                 )}
               </div>

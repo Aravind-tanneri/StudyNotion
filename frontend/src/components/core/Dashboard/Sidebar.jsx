@@ -11,7 +11,7 @@ import ConfirmationModal from '../../common/ConfirmationModal'
 // Hardcoding the links here (grouped like the UI)
 const sidebarLinks = {
   common: [
-    { id: 1, name: "Dashboard", path: "/dashboard/instructor", type: "Instructor", icon: "VscDashboard" },
+    { id: 1, name: "Dashboard", path: "/dashboard/instructor", icon: "VscDashboard", requiredAccountType: ["Instructor", "Admin"] },
     { id: 2, name: "My Profile", path: "/dashboard/my-profile", icon: "VscAccount" },
   ],
   instructor: [
@@ -47,9 +47,22 @@ const Sidebar = () => {
       <div className='flex min-w-[222px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800 py-10 h-[calc(100vh-3.5rem)]'>
         <div className='flex flex-col'>
           
+          {/* User Role */}
+          {user?.accountType && (
+            <div className='mb-4 flex items-center justify-center gap-x-2'>
+              <span className='rounded-full bg-richblack-700 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-yellow-50'>
+                {user.accountType}
+              </span>
+            </div>
+          )}
+
           {/* Top Links */}
           {sidebarLinks.common
-            .filter((link) => !link.type || link.type === user?.accountType)
+            .filter(
+              (link) =>
+                !link.requiredAccountType ||
+                link.requiredAccountType.includes(user?.accountType)
+            )
             .map((link) => (
               <SidebarLink key={link.id} link={link} iconName={link.icon} />
             ))}

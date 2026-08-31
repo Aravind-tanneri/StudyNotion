@@ -21,7 +21,18 @@ export default function ProfileDropdown() {
   if (!user) return null;
 
   return (
-    <button className="relative" onClick={() => setOpen(!open)}>
+    <div
+      className="relative cursor-pointer"
+      role="button"
+      tabIndex={0}
+      onClick={() => setOpen(!open)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          setOpen(!open)
+        }
+      }}
+    >
       <div className="flex items-center gap-x-1">
         <img
           src={user?.image}
@@ -33,24 +44,21 @@ export default function ProfileDropdown() {
       {open && (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="absolute top-[118%] right-0 z-[1000] divide-y-[1px] divide-slate-700 overflow-hidden rounded-md border-[1px] border-slate-700 bg-slate-800"
+          className="absolute top-[118%] right-0 z-[1000] flex w-[150px] flex-col gap-2 rounded-md border-[1px] border-slate-700 bg-slate-800 p-2"
           ref={ref}
         >
           <Link to="/dashboard/my-profile" onClick={() => setOpen(false)}>
-            <div className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-slate-300 hover:bg-slate-700 hover:text-slate-25">
+            <button className="btn-dark w-full gap-2">
               <VscDashboard className="text-lg" />
               Dashboard
-            </div>
+            </button>
           </Link>
-          <div
-            onClick={handleLogout}
-            className="flex w-full items-center gap-x-1 py-[10px] px-[12px] text-sm text-slate-300 hover:bg-slate-700 hover:text-slate-25"
-          >
+          <button onClick={handleLogout} className="btn-grad w-full gap-2">
             <VscSignOut className="text-lg" />
             Logout
-          </div>
+          </button>
         </div>
       )}
-    </button>
+    </div>
   );
 }

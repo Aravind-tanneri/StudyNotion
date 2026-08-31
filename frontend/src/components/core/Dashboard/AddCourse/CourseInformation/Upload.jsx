@@ -18,11 +18,18 @@ export default function Upload({
   const fileInputRef = useRef(null)
 
   useEffect(() => {
-    register(name, { required: true })
-  }, [register, name])
+    if (editData || viewData) {
+      setValue(name, editData || viewData)
+    } else {
+      register(name, { required: true })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [register, name, editData, viewData])
 
   useEffect(() => {
-    setValue(name, selectedFile)
+    if (selectedFile) {
+      setValue(name, selectedFile)
+    }
   }, [selectedFile, setValue, name])
 
   const handleFileChange = (e) => {
@@ -73,13 +80,19 @@ export default function Upload({
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation()
-                  setPreviewSource("")
-                  setSelectedFile(null)
-                  setValue(name, null)
+                  if (editData) {
+                    setPreviewSource(editData)
+                    setSelectedFile(null)
+                    setValue(name, editData)
+                  } else {
+                    setPreviewSource("")
+                    setSelectedFile(null)
+                    setValue(name, null)
+                  }
                 }}
                 className="mt-3 text-richblack-400 underline hover:text-pink-200"
               >
-                Cancel
+                Remove
               </button>
             )}
           </div>

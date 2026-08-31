@@ -22,10 +22,8 @@ export default function UpdatePassword() {
 
   const submitPasswordForm = async (data) => {
     try {
-      console.log("Password Data:", data)
       dispatch(changePassword(token, data))
     } catch (error) {
-      console.log("ERROR MESSAGE - ", error.message)
     }
   }
 

@@ -7,7 +7,16 @@ exports.createRating = async (req, res) => {
     const userId = req.user.id;
     const { rating, review, courseId } = req.body;
 
-    if (!rating || !review || !courseId) {
+    const numericRating = Number(rating);
+
+    if (
+      !courseId ||
+      typeof review !== "string" ||
+      !review.trim() ||
+      !Number.isFinite(numericRating) ||
+      numericRating < 1 ||
+      numericRating > 5
+    ) {
       return res
         .status(400)
         .json({ success: false, message: "All fields are required." });
@@ -46,8 +55,8 @@ exports.createRating = async (req, res) => {
 
     const ratingReview = await RatingAndReview.create({
       user: userId,
-      rating,
-      review,
+      rating: numericRating,
+      review: review.trim(),
     });
 
     await Course.findByIdAndUpdate(

@@ -1,5 +1,6 @@
 import { toast } from "react-hot-toast"
 import { setLoading, setToken } from "../../slices/authSlice"
+import { setUser } from "../../slices/profileSlice"
 import { apiConnector } from "../apiconnector"
 import { endpoints } from "../apis"
 
@@ -15,7 +16,6 @@ export function sendOtp(email, navigate) {
         email,
         checkUserPresent: true,
       })
-      console.log("SENDOTP API RESPONSE............", response)
 
       if (!response.data.success) {
         throw new Error(response.data.message)
@@ -24,7 +24,6 @@ export function sendOtp(email, navigate) {
       toast.success("OTP Sent Successfully")
       navigate("/verify-email")
     } catch (error) {
-      console.log("SENDOTP API ERROR............", error)
       toast.error("Could Not Send OTP")
     }
     dispatch(setLoading(false))
@@ -41,7 +40,6 @@ export function signUp(accountType, name, email, password, confirmPassword, cont
         accountType, name, email, password, confirmPassword, contactNumber, otp,
       })
 
-      console.log("SIGNUP API RESPONSE............", response)
 
       if (!response.data.success) {
         throw new Error(response.data.message)
@@ -49,7 +47,6 @@ export function signUp(accountType, name, email, password, confirmPassword, cont
       toast.success("Signup Successful")
       navigate("/login")
     } catch (error) {
-      console.log("SIGNUP API ERROR............", error)
       toast.error("Signup Failed")
       navigate("/signup")
     }
@@ -70,7 +67,6 @@ export function login(email, password, navigate) {
         password,
       })
 
-      console.log("LOGIN API RESPONSE............", response)
 
       if (!response.data.success) {
         throw new Error(response.data.message)
@@ -79,13 +75,13 @@ export function login(email, password, navigate) {
       toast.success("Login Successful")
       
       dispatch(setToken(response.data.token))
+      dispatch(setUser(response.data.user))
       localStorage.setItem("token", JSON.stringify(response.data.token))
       localStorage.setItem("user", JSON.stringify(response.data.user))
       
       navigate("/dashboard/my-profile")
       
     } catch (error) {
-      console.log("LOGIN API ERROR............", error)
       toast.error("Login Failed")
     }
     
@@ -97,6 +93,7 @@ export function login(email, password, navigate) {
 export function logout(navigate) {
   return (dispatch) => {
     dispatch(setToken(null))
+    dispatch(setUser(null))
     localStorage.removeItem("token")
     localStorage.removeItem("user")
     toast.success("Logged Out")
@@ -110,7 +107,6 @@ export function getPasswordResetToken(email, setEmailSent) {
     dispatch(setLoading(true))
     try {
       const response = await apiConnector("POST", RESETPASSTOKEN_API, { email })
-      console.log("RESETPASSTOKEN_API RESPONSE............", response)
 
       if (!response.data.success) {
         throw new Error(response.data.message)
@@ -119,7 +115,6 @@ export function getPasswordResetToken(email, setEmailSent) {
       toast.success("Reset link sent to your email")
       setEmailSent(true)
     } catch (error) {
-      console.log("RESETPASSTOKEN_API ERROR............", error)
       toast.error(error?.response?.data?.message || "Could Not Send Reset Email")
     }
     dispatch(setLoading(false))
@@ -137,7 +132,6 @@ export function resetPassword(password, confirmPassword, token, navigate) {
         confirmPassword,
         token,
       })
-      console.log("RESETPASSWORD_API RESPONSE............", response)
 
       if (!response.data.success) {
         throw new Error(response.data.message)
@@ -146,7 +140,6 @@ export function resetPassword(password, confirmPassword, token, navigate) {
       toast.success("Password reset successfully")
       navigate("/login")
     } catch (error) {
-      console.log("RESETPASSWORD_API ERROR............", error)
       toast.error(error?.response?.data?.message || "Could Not Reset Password")
     }
     dispatch(setLoading(false))

@@ -53,11 +53,24 @@ exports.updateSection = async (req, res) => {
             return res.status(400).json({ success: false, message: "Missing properties" });
         }
 
+        const { courseId } = req.body;
+
         const section = await Section.findByIdAndUpdate(sectionId, { sectionName }, { new: true });
+
+        let updatedCourse = null;
+        if (courseId) {
+            updatedCourse = await Course.findById(courseId)
+                .populate({
+                    path: "courseContent",
+                    populate: { path: "subSection" },
+                })
+                .exec();
+        }
 
         return res.status(200).json({
             success: true,
             message: "Section updated successfully",
+            data: updatedCourse,
         });
     } catch (error) {
         return res.status(500).json({ success: false, message: "Unable to update Section" });

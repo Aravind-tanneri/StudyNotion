@@ -3,14 +3,14 @@ const bcrypt = require("bcrypt");
 require("dotenv").config();
 
 // Import our models
-const User = require("./models/User");
-const Profile = require("./models/Profile");
-const Course = require("./models/Course");
-const Tag = require("./models/Tag");
-const Section = require("./models/Section");
-const SubSection = require("./models/SubSection");
-const RatingAndReview = require("./models/RatingAndReview");
-const CourseProgress = require("./models/CourseProgress");
+const User = require("../models/User");
+const Profile = require("../models/Profile");
+const Course = require("../models/Course");
+const Tag = require("../models/Tag");
+const Section = require("../models/Section");
+const SubSection = require("../models/SubSection");
+const RatingAndReview = require("../models/RatingAndReview");
+const CourseProgress = require("../models/CourseProgress");
 
 const MONGODB_URL = process.env.MONGODB_URL;
 

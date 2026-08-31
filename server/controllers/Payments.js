@@ -54,7 +54,6 @@ exports.capturePayment = async (req, res) => {
         try {
             // Initiating the real Razorpay order creation
             const paymentResponse = await instance.orders.create(options);
-            console.log("Real Razorpay Order Created:", paymentResponse);
 
             return res.status(200).json({
                 success: true,
@@ -127,7 +126,6 @@ exports.verifySignature = async (req, res) => {
                             dashboardUrl,
                         })
                     );
-                    console.log(`Confirmation Email Sent for ${enrolledCourse.courseName}`);
                 } catch (emailError) {
                     console.error("Failed to send confirmation email for course:", enrolledCourse.courseName, emailError);
                 }

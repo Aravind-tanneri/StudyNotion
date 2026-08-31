@@ -91,36 +91,38 @@ export default function Instructor() {
           </div>
 
           {/* We display a quick view of the instructor's latest courses */}
-          <div className="rounded-md bg-richblack-800 p-6">
-            <div className="flex items-center justify-between">
-              <p className="text-lg font-bold text-richblack-5">Your Courses</p>
-              <button
-                onClick={() => navigate("/dashboard/my-courses")}
-                className="text-xs font-semibold text-yellow-50"
-              >
-                View All
-              </button>
-            </div>
-            <div className="my-4 flex items-start space-x-6">
-              {/* We slice the array to only show the first 3 courses */}
-              {instructorData.slice(0, 3).map((course) => (
-                <div key={course._id} className="w-1/3">
-                  <p className="mt-3 text-sm font-medium text-richblack-5">
-                    {course.courseName}
-                  </p>
-                  <div className="mt-1 flex items-center space-x-2">
-                    <p className="text-xs font-medium text-richblack-300">
-                      {course.totalStudentsEnrolled} students
+          {user?.accountType !== "Admin" && (
+            <div className="rounded-md bg-richblack-800 p-6">
+              <div className="flex items-center justify-between">
+                <p className="text-lg font-bold text-richblack-5">Your Courses</p>
+                <button
+                  onClick={() => navigate("/dashboard/my-courses")}
+                  className="text-xs font-semibold text-yellow-50"
+                >
+                  View All
+                </button>
+              </div>
+              <div className="my-4 flex items-start space-x-6">
+                {/* We slice the array to only show the first 3 courses */}
+                {instructorData.slice(0, 3).map((course) => (
+                  <div key={course._id} className="w-1/3">
+                    <p className="mt-3 text-sm font-medium text-richblack-5">
+                      {course.courseName}
                     </p>
-                    <p className="text-xs font-medium text-richblack-300">|</p>
-                    <p className="text-xs font-medium text-richblack-300">
-                      Rs. {course.totalAmountGenerated}
-                    </p>
+                    <div className="mt-1 flex items-center space-x-2">
+                      <p className="text-xs font-medium text-richblack-300">
+                        {course.totalStudentsEnrolled} students
+                      </p>
+                      <p className="text-xs font-medium text-richblack-300">|</p>
+                      <p className="text-xs font-medium text-richblack-300">
+                        Rs. {course.totalAmountGenerated}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
       ) : (
         <div className="mt-20 rounded-md bg-richblack-800 p-6 py-20 text-center text-2xl font-bold text-richblack-5">

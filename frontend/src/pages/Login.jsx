@@ -32,6 +32,10 @@ const Login = () => {
         dispatch(login(formData.email, formData.password, navigate));
     };
 
+    const handleDemoLogin = (email) => {
+        dispatch(login(email, "password123", navigate));
+    };
+
     return (
         <div className="mx-auto flex  min-lg:w-5/6 w-11/12 max-w-maxContent flex-col-reverse justify-center gap-y-12 py-12 md:flex-row md:gap-y-0 min-lg:gap-x-36 max-lg:gap-x-12 min-h-[calc(100vh-3.5rem)] mt-10">
             
@@ -131,6 +135,44 @@ const Login = () => {
                         Sign in
                     </button>
                 </form>
+
+                {/* Demo Login Section */}
+                <div className="mt-8 border-t border-richblack-700 pt-6">
+                    <div className="flex items-center gap-3">
+                        <div className="h-px flex-1 bg-richblack-700"></div>
+                        <p className="text-sm uppercase tracking-wider text-richblack-200">Quick Demo Login</p>
+                        <div className="h-px flex-1 bg-richblack-700"></div>
+                    </div>
+                    <div className="mt-4 grid grid-cols-3 gap-3">
+                        <button
+                            type="button"
+                            onClick={() => handleDemoLogin("ankit@studynotion.com")}
+                            className="flex flex-col items-center gap-1 rounded-lg border border-richblack-600 bg-richblack-800 px-3 py-3 text-center transition-all duration-200 hover:border-yellow-50 hover:bg-richblack-700"
+                        >
+                            <span className="text-xs font-medium text-yellow-50">Student</span>
+                            <span className="text-[0.65rem] text-richblack-300">ankit@studynotion.com</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => handleDemoLogin("aravind@studynotion.com")}
+                            className="flex flex-col items-center gap-1 rounded-lg border border-richblack-600 bg-richblack-800 px-3 py-3 text-center transition-all duration-200 hover:border-yellow-50 hover:bg-richblack-700"
+                        >
+                            <span className="text-xs font-medium text-yellow-50">Instructor</span>
+                            <span className="text-[0.65rem] text-richblack-300">aravind@studynotion.com</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => handleDemoLogin("admin@studynotion.com")}
+                            className="flex flex-col items-center gap-1 rounded-lg border border-richblack-600 bg-richblack-800 px-3 py-3 text-center transition-all duration-200 hover:border-yellow-50 hover:bg-richblack-700"
+                        >
+                            <span className="text-xs font-medium text-yellow-50">Admin</span>
+                            <span className="text-[0.65rem] text-richblack-300">admin@studynotion.com</span>
+                        </button>
+                    </div>
+                    <p className="mt-3 text-center text-[0.65rem] text-richblack-400">
+                        Password for all demo accounts: <span className="font-semibold text-richblack-200">password123</span>
+                    </p>
+                </div>
 
                 {/* Don't have an account section */}
                 <div className='mt-4 text-center'>

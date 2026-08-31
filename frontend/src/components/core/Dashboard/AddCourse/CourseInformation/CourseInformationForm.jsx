@@ -5,17 +5,33 @@ import { apiConnector } from "../../../../../services/apiconnector"
 import { categories } from "../../../../../services/apis"
 import RequirementField from "./RequirementField"
 import Upload from "./Upload"
-import { addCourseDetails } from "../../../../../services/operations/courseDetailsAPI"
+import {
+  addCourseDetails,
+  editCourseDetails,
+} from "../../../../../services/operations/courseDetailsAPI"
 import { setCourse, setStep } from "../../../../../slices/courseSlice"
 
 import { HiOutlineCurrencyRupee } from "react-icons/hi"
 
 const CourseInformationForm = () => {
-  const { register, handleSubmit, setValue, getValues, formState: { errors } } = useForm()
+  const { token } = useSelector((state) => state.auth)
+  const { course } = useSelector((state) => state.course)
+  const { editCourse } = useSelector((state) => state.course)
+
+  const defaultValues = editCourse
+    ? {
+        courseTitle: course?.courseName || "",
+        courseShortDesc: course?.courseDescription || "",
+        coursePrice: course?.price || "",
+        courseBenefits: course?.whatYouWillLearn || "",
+        courseImage: course?.thumbnail || "",
+      }
+    : {}
+
+  const { register, handleSubmit, setValue, getValues, formState: { errors } } = useForm({ defaultValues })
   const [courseCategories, setCourseCategories] = useState([])
   const [loading, setLoading] = useState(false)
   const dispatch = useDispatch()
-  const { token } = useSelector((state) => state.auth)
 
   // Fetch Categories from Backend
   useEffect(() => {
@@ -32,25 +48,33 @@ const CourseInformationForm = () => {
     // 1. Create a new FormData object
     const formData = new FormData();
 
-    // 2. Append all the text data
+    // 2. When editing, carry the existing course id
+    if (editCourse) {
+      formData.append("courseId", course._id)
+    }
+
+    // 3. Append all the text data
     formData.append("courseName", data.courseTitle)
     formData.append("courseDescription", data.courseShortDesc)
     formData.append("price", data.coursePrice)
     formData.append("whatYouWillLearn", data.courseBenefits)
-    formData.append("tag", data.courseTags || [])
-    
-    // 3. Special Case: Convert the Array into a String for the backend
-    formData.append("instructions", JSON.stringify(data.courseRequirements || []))
-    
-    // 4. Append the Image File
-    formData.append("thumbnailImage", data.courseImage)
 
-    // Optional: Add status (Draft by default)
-    formData.append("status", "Draft")
+    // 4. Special Case: Convert the Array into a String for the backend
+    formData.append("instructions", JSON.stringify(data.courseRequirements || []))
+
+    // 5. Append the Image File only when a new one is picked
+    if (data.courseImage && typeof data.courseImage !== "string") {
+      formData.append("thumbnailImage", data.courseImage)
+    }
+
+    // 6. Keep the current status while editing
+    formData.append("status", editCourse ? course?.status || "Draft" : "Draft")
 
     setLoading(true)
-    const result = await addCourseDetails(formData, token)
-    
+    const result = editCourse
+      ? await editCourseDetails(formData, token)
+      : await addCourseDetails(formData, token)
+
     if (result) {
       dispatch(setCourse(result))
       dispatch(setStep(2))
@@ -111,26 +135,28 @@ const CourseInformationForm = () => {
         {errors.coursePrice && <span className="text-xs text-pink-200">Course Price is required</span>}
       </div>
 
-      {/* 4. Category Dropdown */}
-      <div className="flex flex-col space-y-2">
-        <label className="text-sm text-richblack-5" htmlFor="courseCategory">
-          Course Category <sup className="text-pink-200">*</sup>
-        </label>
-        <select
-          id="courseCategory"
-          defaultValue=""
-          {...register("courseCategory", { required: true })}
-          className="form-style w-full"
-        >
-          <option value="" disabled>Choose a Category</option>
-          {courseCategories?.map((category, index) => (
-            <option key={index} value={category?._id}>
-              {category?.name}
-            </option>
-          ))}
-        </select>
-        {errors.courseCategory && <span className="text-xs text-pink-200">Course Category is required</span>}
-      </div>
+      {/* 4. Category Dropdown (only for new courses) */}
+      {!editCourse && (
+        <div className="flex flex-col space-y-2">
+          <label className="text-sm text-richblack-5" htmlFor="courseCategory">
+            Course Category <sup className="text-pink-200">*</sup>
+          </label>
+          <select
+            id="courseCategory"
+            defaultValue=""
+            {...register("courseCategory", { required: true })}
+            className="form-style w-full"
+          >
+            <option value="" disabled>Choose a Category</option>
+            {courseCategories?.map((category, index) => (
+              <option key={index} value={category?._id}>
+                {category?.name}
+              </option>
+            ))}
+          </select>
+          {errors.courseCategory && <span className="text-xs text-pink-200">Course Category is required</span>}
+        </div>
+      )}
 
       {/* 5. Course Benefits */}
       <div className="flex flex-col space-y-2">
@@ -153,6 +179,7 @@ const CourseInformationForm = () => {
         register={register}
         setValue={setValue}
         errors={errors}
+        editData={editCourse ? course?.thumbnail : null}
       />
 
       {/* 7. Requirements Component */}
@@ -163,6 +190,8 @@ const CourseInformationForm = () => {
         setValue={setValue}
         errors={errors}
         getValues={getValues}
+        editCourse={editCourse}
+        defaultValue={editCourse ? course?.instructions || [] : []}
       />
 
       {/* Next Button */}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useNavigate, Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
 import { setSignupData } from '../slices/authSlice';
@@ -12,6 +12,11 @@ import frameImg from '../assets/Images/frameImg.png';
 const Signup = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { token } = useSelector((state) => state.auth);
+
+  if (token) {
+    navigate("/dashboard");
+  }
 
   const [accountType, setAccountType] = useState("Student");
   const [showPassword, setShowPassword] = useState(false);
@@ -42,7 +47,6 @@ const Signup = () => {
     }
     
     const signupData = { ...formData, accountType };
-    console.log("Signup Data:", signupData);
 
     // Firing our Redux actions!
     dispatch(setSignupData(signupData));
@@ -226,6 +230,13 @@ const Signup = () => {
           >
             Create Account
           </button>
+
+          <p className="mt-2 text-center text-richblack-100 text-sm">
+            Already have an account?{" "}
+            <Link to="/login" className="text-richblack-5 hover:text-yellow-50 font-semibold">
+              Log in
+            </Link>
+          </p>
         </form>
       </div>
 

@@ -24,7 +24,6 @@ export default function NestedView({ handleChangeEditSectionName }) {
     const result = await deleteSection({ sectionId, courseId: course._id }, token)
     if (result) { dispatch(setCourse(result)) }
     setConfirmationModal(null)
-    console.log("Deleting Section:", sectionId)
   }
 
   const handleDeleteSubSection = async (subSectionId, sectionId) => {
@@ -37,7 +36,6 @@ export default function NestedView({ handleChangeEditSectionName }) {
       dispatch(setCourse(updatedCourse))
     }
     setConfirmationModal(null)
-    console.log("Deleting SubSection:", subSectionId)
   }
 
   return (

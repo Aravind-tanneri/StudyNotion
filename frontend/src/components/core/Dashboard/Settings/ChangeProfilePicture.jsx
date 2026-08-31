@@ -47,7 +47,6 @@ export default function ChangeProfilePicture() {
     }
     
     try {
-      console.log("Uploading Profile Picture...")
       setLoading(true)
       
       const formData = new FormData()
@@ -60,7 +59,6 @@ export default function ChangeProfilePicture() {
       // Simulating loading for now until we build the API
       setTimeout(() => setLoading(false), 1000)
     } catch (error) {
-      console.log("ERROR MESSAGE - ", error.message)
       setLoading(false)
     }
   }

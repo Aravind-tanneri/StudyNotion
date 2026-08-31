@@ -70,8 +70,9 @@ const Course = require("../models/Course");
 // We fetch and calculate the analytics for our instructor dashboard
 exports.instructorDashboard = async (req, res) => {
   try {
-    // We fetch all courses created by our currently logged-in instructor
-    const courseDetails = await Course.find({ instructor: req.user.id });
+    // Admins see platform-wide stats, instructors see only their own courses
+    const courseFilter = req.user.accountType === "Admin" ? {} : { instructor: req.user.id };
+    const courseDetails = await Course.find(courseFilter);
 
     // We map through our array of courses to calculate the math for each one
     const courseData = courseDetails.map((course) => {

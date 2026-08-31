@@ -230,24 +230,26 @@ exports.updateCourseProgress = async (req, res) => {
         const { courseId, subSectionId } = req.body;
         const userId = req.user.id;
 
+        if (!courseId || !subSectionId) {
+            return res.status(400).json({ success: false, message: "courseId and subSectionId are required" });
+        }
+
         const subSection = await SubSection.findById(subSectionId);
         if (!subSection) {
             return res.status(404).json({ success: false, message: "Invalid SubSection" });
         }
 
-        let courseProgress = await CourseProgress.findOne({ courseID: courseId, userId: userId });
-        if (!courseProgress) {
-            return res.status(404).json({ success: false, message: "Course progress does not exist" });
-        }
+        const courseProgress = await CourseProgress.findOneAndUpdate(
+            { courseID: courseId, userId: userId },
+            { $addToSet: { completedVideos: subSectionId } },
+            { new: true, upsert: true }
+        );
 
-        if (courseProgress.completedVideos.includes(subSectionId)) {
-            return res.status(400).json({ success: false, message: "Lecture already completed" });
-        }
-
-        courseProgress.completedVideos.push(subSectionId);
-        await courseProgress.save();
-
-        return res.status(200).json({ success: true, message: "Lecture completed" });
+        return res.status(200).json({
+            success: true,
+            message: "Lecture completed",
+            data: { completedVideos: courseProgress.completedVideos },
+        });
     } catch (error) {
         console.error(error);
         return res.status(500).json({ success: false, message: "Internal server error" });

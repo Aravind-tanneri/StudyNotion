@@ -1,7 +1,7 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { RxCross2 } from "react-icons/rx"
-import ReactStars from "react-rating-stars-component"
+import { FaStar } from "react-icons/fa"
 import { useSelector } from "react-redux"
 import { createRating } from "../../../services/operations/courseDetailsAPI"
 import IconBtn from "../../common/IconBtn"
@@ -10,6 +10,8 @@ export default function CourseReviewModal({ setReviewModal }) {
   const { user } = useSelector((state) => state.profile)
   const { token } = useSelector((state) => state.auth)
   const { courseEntireData } = useSelector((state) => state.viewCourse)
+
+  const [rating, setRating] = useState(0)
 
   const {
     register,
@@ -27,6 +29,7 @@ export default function CourseReviewModal({ setReviewModal }) {
 
   // This function catches the number of stars the user clicked
   const ratingChanged = (newRating) => {
+    setRating(newRating)
     setValue("courseRating", newRating)
   }
 
@@ -40,11 +43,9 @@ export default function CourseReviewModal({ setReviewModal }) {
         },
         token
       )
-      console.log("Review Data to send to backend:", data)
       // Close the modal after submitting
       setReviewModal(false)
     } catch (error) {
-      console.log("Error submitting review:", error)
     }
   }
 
@@ -81,12 +82,42 @@ export default function CourseReviewModal({ setReviewModal }) {
             className="mt-6 flex flex-col items-center"
           >
             {/* The Interactive Stars */}
-            <ReactStars
-              count={5}
-              onChange={ratingChanged}
-              size={24}
-              activeColor="#ffd700"
+            <div className="flex flex-col items-center gap-1">
+              <div className="flex items-center gap-1">
+                {Array.from({ length: 5 }, (_, i) => {
+                  const starValue = i + 1
+                  return (
+                    <button
+                      type="button"
+                      key={starValue}
+                      onClick={() => ratingChanged(starValue)}
+                      className="p-1 transition-all duration-200 hover:scale-125"
+                      aria-label={`Rate ${starValue} star${starValue > 1 ? "s" : ""}`}
+                    >
+                      <FaStar
+                        className={`text-2xl ${
+                          starValue <= rating ? "text-yellow-50" : "text-richblack-600"
+                        }`}
+                      />
+                    </button>
+                  )
+                })}
+              </div>
+              <p className="text-xs text-richblack-300">
+                Add Your Rating <sup className="text-pink-200">*</sup>
+              </p>
+            </div>
+
+            {/* Hidden field so react-hook-form validates the rating too */}
+            <input
+              type="hidden"
+              {...register("courseRating", { required: true, min: 1 })}
             />
+            {errors.courseRating && (
+              <span className="ml-2 mt-1 text-xs tracking-wide text-pink-200">
+                Please Add a Rating
+              </span>
+            )}
 
             {/* The Text Area */}
             <div className="flex w-11/12 flex-col space-y-2 mt-4">

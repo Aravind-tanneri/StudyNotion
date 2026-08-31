@@ -251,7 +251,6 @@ exports.changePassword = async (req, res) => {
                 "Password for your account has been updated",
                 "Password updated successfully"
             );
-            console.log("Email sent successfully:", emailResponse);
         } catch (error) {
             console.error("Error in sending email:", error);
             return res.status(500).json({

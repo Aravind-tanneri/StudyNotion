@@ -23,10 +23,8 @@ export default function CourseBuilderForm() {
 
     if (editSectionName) {
       result = await updateSection({ sectionName: data.sectionName, sectionId: editSectionName, courseId: course._id }, token)
-      console.log("Editing section:", data.sectionName)
     } else {
       result = await createSection({ sectionName: data.sectionName, courseId: course._id }, token)
-      console.log("Creating new section:", data.sectionName)
     }
 
     // If API call is successful, update the Redux store with the new course data
@@ -45,7 +43,7 @@ export default function CourseBuilderForm() {
 
   const goBack = () => {
     dispatch(setStep(1))
-    dispatch(setEditCourse(true))
+    dispatch(setEditCourse(false))
   }
 
   const goToNext = () => {

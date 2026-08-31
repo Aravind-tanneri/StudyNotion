@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { buyCourse } from "../services/operations/studentFeaturesAPI"
 import { fetchCourseDetails } from "../services/operations/courseDetailsAPI"
 import { addToCart } from "../slices/cartSlice"
+import { getUserEnrolledCourses } from "../services/operations/profileAPI"
 import { toast } from "react-hot-toast"
 
 import { BiInfoCircle } from 'react-icons/bi'
@@ -24,9 +25,26 @@ export default function CourseDetails() {
 
     const [courseData, setCourseData] = useState(null)
     const [activeSections, setActiveSections] = useState([])
+    const [enrolledIds, setEnrolledIds] = useState(new Set())
 
     const avgRating = getAverageRating(courseData?.ratingAndReviews)
     const ratingCount = getRatingCount(courseData?.ratingAndReviews)
+
+    // 0. Fetch enrolled courses so purchased ones hide buy buttons
+    useEffect(() => {
+        if (token && user?.accountType === "Student") {
+            const getEnrolled = async () => {
+                try {
+                    const enrolled = await getUserEnrolledCourses(token)
+                    setEnrolledIds(new Set(enrolled.map((c) => c._id)))
+                } catch (error) {
+                }
+            }
+            getEnrolled()
+        }
+    }, [token, user?.accountType])
+
+    const isEnrolled = enrolledIds.has(courseId)
 
     // 1. Fetch the course data exactly like your old file
     useEffect(() => {
@@ -35,7 +53,6 @@ export default function CourseDetails() {
                 const res = await fetchCourseDetails(courseId)
                 setCourseData(res?.data?.courseDetails)
             } catch (error) {
-                console.log("Could not fetch Course Details", error)
             }
         }
         getCourseSpecificDetails()
@@ -126,6 +143,7 @@ export default function CourseDetails() {
                             course={courseData} 
                             handleAddToCart={handleAddToCart} 
                             handleBuyCourse={handleBuyCourse} 
+                            enrolled={isEnrolled}
                         />
                     </div>
                 </div>
@@ -142,6 +160,7 @@ export default function CourseDetails() {
                             course={courseData} 
                             handleAddToCart={handleAddToCart} 
                             handleBuyCourse={handleBuyCourse} 
+                            enrolled={isEnrolled}
                         />
                     </div>
 

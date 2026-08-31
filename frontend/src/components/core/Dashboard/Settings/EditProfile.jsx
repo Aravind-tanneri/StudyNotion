@@ -11,18 +11,26 @@ export default function EditProfile() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
+  const nameParts = user?.name?.split(" ") || []
+  const defaultValues = {
+    firstName: nameParts[0] || "",
+    lastName: nameParts.slice(1).join(" ") || "",
+    dateOfBirth: user?.profile?.dob || "",
+    gender: user?.profile?.gender || "",
+    contactNumber: user?.profile?.contactNumber || user?.contactNumber || "",
+    about: user?.profile?.about || "",
+  }
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm()
+  } = useForm({ defaultValues })
 
   const submitProfileForm = async (data) => {
     try {
-      console.log("Updated Profile Data:", data)
       dispatch(updateProfile(token, data))
     } catch (error) {
-      console.log("ERROR MESSAGE - ", error.message)
     }
   }
 
@@ -47,7 +55,6 @@ export default function EditProfile() {
                 placeholder="Enter first name"
                 className="form-style bg-richblack-700 p-3 rounded-md text-richblack-5"
                 {...register("firstName", { required: true })}
-                defaultValue={user?.firstName}
               />
               {errors.firstName && (
                 <span className="text-pink-200 text-xs">Please enter your first name.</span>
@@ -65,7 +72,6 @@ export default function EditProfile() {
                 placeholder="Enter last name"
                 className="form-style bg-richblack-700 p-3 rounded-md text-richblack-5"
                 {...register("lastName", { required: true })}
-                defaultValue={user?.lastName}
               />
               {errors.lastName && (
                 <span className="text-pink-200 text-xs">Please enter your last name.</span>
@@ -93,7 +99,6 @@ export default function EditProfile() {
                     message: "Date of Birth cannot be in the future.",
                   },
                 })}
-                defaultValue={user?.additionalDetails?.dateOfBirth}
               />
               {errors.dateOfBirth && (
                 <span className="text-pink-200 text-xs">{errors.dateOfBirth.message}</span>
@@ -109,7 +114,6 @@ export default function EditProfile() {
                 id="gender"
                 className="form-style bg-richblack-700 p-3 rounded-md text-richblack-5"
                 {...register("gender", { required: true })}
-                defaultValue={user?.additionalDetails?.gender}
               >
                 {genders.map((ele, i) => (
                   <option key={i} value={ele}>
@@ -142,7 +146,6 @@ export default function EditProfile() {
                   maxLength: { value: 12, message: "Invalid Contact Number" },
                   minLength: { value: 10, message: "Invalid Contact Number" },
                 })}
-                defaultValue={user?.additionalDetails?.contactNumber}
               />
               {errors.contactNumber && (
                 <span className="text-pink-200 text-xs">{errors.contactNumber.message}</span>
@@ -160,7 +163,6 @@ export default function EditProfile() {
                 placeholder="Enter Bio Details"
                 className="form-style bg-richblack-700 p-3 rounded-md text-richblack-5"
                 {...register("about", { required: true })}
-                defaultValue={user?.additionalDetails?.about}
               />
               {errors.about && (
                 <span className="text-pink-200 text-xs">Please enter your Bio.</span>

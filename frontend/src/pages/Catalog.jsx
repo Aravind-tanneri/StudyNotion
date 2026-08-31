@@ -1,21 +1,41 @@
 import React, { useEffect, useState, useMemo } from "react"
 import { useParams } from "react-router-dom"
+import { useSelector } from "react-redux"
 
 // API & Service Imports
 import { apiConnector } from "../services/apiconnector"
 import { categories } from "../services/apis"
 import { getCategoryPageDetails } from "../services/operations/pageAndComponentData"
+import { getUserEnrolledCourses } from "../services/operations/profileAPI"
 
 // Component Imports
 import CourseSlider from "../components/core/Catalog/CourseSlider"
 import CourseCard from "../components/core/Catalog/CourseCard"
+import { ACCOUNT_TYPE } from "../utils/constants"
 
 const Catalog = () => {
   const { catalogName } = useParams()
+  const { token } = useSelector((state) => state.auth)
+  const { user } = useSelector((state) => state.profile)
   
   const [catalogPageData, setCatalogPageData] = useState(null)
   const [categoryId, setCategoryId] = useState("")
   const [activeTab, setActiveTab] = useState(1) // 1=Most Popular, 2=New, 3=Trending
+  const [purchasedIds, setPurchasedIds] = useState(new Set())
+
+  // 0. Fetch enrolled courses so purchased ones show "Open Course" instead of price
+  useEffect(() => {
+    if (token && user?.accountType === ACCOUNT_TYPE.STUDENT) {
+      const getEnrolled = async () => {
+        try {
+          const enrolled = await getUserEnrolledCourses(token)
+          setPurchasedIds(new Set(enrolled.map((c) => c._id)))
+        } catch (error) {
+        }
+      }
+      getEnrolled()
+    }
+  }, [token, user?.accountType])
 
   // 1. Fetch all categories to find the ID that matches our URL slug
   useEffect(() => {
@@ -30,7 +50,6 @@ const Catalog = () => {
         
         setCategoryId(category_id)
       } catch (error) {
-        console.log("Could not fetch Categories", error)
       }
     }
     getCategories()
@@ -44,7 +63,6 @@ const Catalog = () => {
           const res = await getCategoryPageDetails(categoryId)
           setCatalogPageData(res)
         } catch (error) {
-          console.log(error)
         }
       }
       getCategoryDetails()
@@ -174,7 +192,7 @@ const Catalog = () => {
                     </p>
                 </div>
                 {/* Slider for Selected Category */}
-                <CourseSlider Courses={tabCourses} />
+                <CourseSlider Courses={tabCourses} purchasedIds={purchasedIds} />
             </div>
 
             {/* Section 2: Top courses in [Different Category] */}
@@ -183,7 +201,7 @@ const Catalog = () => {
                     Top courses in {catalogPageData?.data?.differentCategory?.name || "Other Categories"}
                 </h2>
                 {/* Tag model uses 'course' field (not 'courses') */}
-                <CourseSlider Courses={catalogPageData?.data?.differentCategory?.course} />
+                <CourseSlider Courses={catalogPageData?.data?.differentCategory?.course} purchasedIds={purchasedIds} />
             </div>
 
             {/* Section 3: Frequently Bought Together (Using Most Selling Courses in a GRID) */}
@@ -191,7 +209,7 @@ const Catalog = () => {
                 <h2 className="text-3xl font-semibold text-richblack-5">Frequently Bought Together</h2>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
                     {catalogPageData?.data?.mostSellingCourses?.slice(0, 4).map((course, index) => (
-                        <CourseCard course={course} key={index} Height={"h-[300px]"} />
+                        <CourseCard course={course} key={index} Height={"h-[300px]"} purchased={purchasedIds.has(course._id)} />
                     ))}
                 </div>
             </div>

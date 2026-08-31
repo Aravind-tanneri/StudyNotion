@@ -108,11 +108,10 @@ export default function VideoDetails() {
 
   const handleLectureCompletion = async () => {
     setLoading(true)
-    const res = await markLectureAsComplete({ courseId: courseId, subsectionId: subSectionId }, token)
+    const res = await markLectureAsComplete({ courseId: courseId, subSectionId: subSectionId }, token)
     if (res) {
       dispatch(updateCompletedLectures(subSectionId))
     }
-    console.log("Lecture Marked as Complete!")
     setLoading(false)
   }
 

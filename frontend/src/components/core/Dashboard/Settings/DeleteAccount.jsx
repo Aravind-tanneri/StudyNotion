@@ -10,10 +10,8 @@ export default function DeleteAccount() {
 
   async function handleDeleteAccount() {
     try {
-      console.log("Dispatching Delete Account Action...")
       dispatch(deleteProfile(token, navigate))
     } catch (error) {
-      console.log("ERROR MESSAGE - ", error.message)
     }
   }
 
