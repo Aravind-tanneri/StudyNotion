@@ -48,7 +48,7 @@ export default function NestedView({ handleChangeEditSectionName }) {
             <summary className="flex cursor-pointer items-center justify-between border-b-2 border-b-richblack-600 py-2">
               <div className="flex items-center gap-x-3">
                 <RxDropdownMenu className="text-2xl text-richblack-50" />
-                <p className="font-semibold text-richblack-50">
+                <p className="font-semibold text-richblack-5">
                   {section.sectionName}
                 </p>
               </div>
@@ -86,7 +86,7 @@ export default function NestedView({ handleChangeEditSectionName }) {
                 >
                   <div className="flex items-center gap-x-3 py-2" onClick={() => setViewSubSection(data)}>
                     <RxDropdownMenu className="text-2xl text-richblack-50" />
-                    <p className="font-semibold text-richblack-50">
+                    <p className="font-semibold text-richblack-5">
                       {data.title}
                     </p>
                   </div>
@@ -115,7 +115,7 @@ export default function NestedView({ handleChangeEditSectionName }) {
               {/* Add New Lecture Button */}
               <button
                 onClick={() => setAddSubSection(section._id)}
-                className="mt-3 flex items-center gap-x-1 text-yellow-50 font-semibold"
+                className="mt-3 flex items-center gap-x-2 rounded-md border border-richblack-500 bg-richblack-800 px-4 py-2 text-sm font-semibold text-yellow-50 transition-all duration-200 hover:bg-richblack-700"
               >
                 <FaPlus className="text-lg" />
                 <p>Add Lecture</p>

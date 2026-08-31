@@ -162,7 +162,7 @@ async function seedDatabase() {
       whatYouWillLearn: "Arrays, Strings & Hashing patterns\nLinked Lists, Stacks & Queues\nBinary Trees, BSTs & Heaps\nGraph algorithms (BFS, DFS, Dijkstra)\nDynamic Programming (1D, 2D, on Trees)\nGreedy & Backtracking\nCompetitive programming strategies",
       courseContent: dsaSections.map(s => s._id),
       price: 2499,
-      thumbnail: "https://images.unsplash.com/photo-1515879218367-8466d910aeb9?w=800&q=80",
+      thumbnail: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&q=80",
       tag: [tags[1]._id],
       studentsEnrolled: [student1._id, student2._id, student5._id],
     });
@@ -188,7 +188,7 @@ async function seedDatabase() {
       whatYouWillLearn: "ESP32 microcontroller programming in C++\nSensor integration (temperature, humidity, soil)\nMQTT protocol for real-time data\nReact dashboard for live monitoring\nCloud deployment with AWS IoT Core",
       courseContent: iotSections.map(s => s._id),
       price: 4500,
-      thumbnail: "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=800&q=80",
+      thumbnail: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80",
       tag: [tags[2]._id],
       studentsEnrolled: [student3._id, student4._id],
     });

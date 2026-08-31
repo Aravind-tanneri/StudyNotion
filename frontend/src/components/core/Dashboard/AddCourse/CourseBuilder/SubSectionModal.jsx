@@ -5,7 +5,37 @@ import { RxCross2 } from "react-icons/rx"
 import { useDispatch, useSelector } from "react-redux"
 import { setCourse } from "../../../../../slices/courseSlice"
 import { createSubSection } from "../../../../../services/operations/courseDetailsAPI"
-import Upload from "../CourseInformation/Upload" 
+import Upload from "../CourseInformation/Upload"
+
+const getVideoDuration = (file) => {
+  return new Promise((resolve) => {
+    if (!file) return resolve(null)
+    try {
+      const url = URL.createObjectURL(file)
+      const video = document.createElement("video")
+      video.preload = "metadata"
+      video.src = url
+      video.onloadedmetadata = () => {
+        URL.revokeObjectURL(url)
+        const d = video.duration
+        if (!isFinite(d) || d <= 0) return resolve("00:00")
+        const mins = Math.floor(d / 60)
+          .toString()
+          .padStart(2, "0")
+        const secs = Math.floor(d % 60)
+          .toString()
+          .padStart(2, "0")
+        resolve(`${mins}:${secs}`)
+      }
+      video.onerror = () => {
+        URL.revokeObjectURL(url)
+        resolve("00:00")
+      }
+    } catch (e) {
+      resolve("00:00")
+    }
+  })
+}
 
 export default function SubSectionModal({
   modalData,
@@ -60,7 +90,10 @@ export default function SubSectionModal({
     formData.append("sectionId", modalData) // In 'Add' mode, modalData is just the sectionId
     formData.append("title", data.lectureTitle)
     formData.append("description", data.lectureDesc)
-    formData.append("video", data.lectureVideo)
+    formData.append("videoFile", data.lectureVideo)
+
+    const duration = await getVideoDuration(data.lectureVideo)
+    formData.append("timeDuration", duration || "00:00")
     
     setLoading(true)
     const result = await createSubSection(formData, token)
@@ -75,7 +108,7 @@ export default function SubSectionModal({
   }
 
   return (
-    <div className="fixed inset-0 z-[1000] !mt-0 grid place-items-center overflow-auto bg-white bg-opacity-10 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[1000] !mt-0 grid place-items-center overflow-auto bg-transparent backdrop-blur-sm">
       <div className="my-10 w-11/12 max-w-[700px] rounded-lg border border-richblack-400 bg-richblack-800">
         {/* Modal Header */}
         <div className="flex items-center justify-between rounded-t-lg bg-richblack-700 p-5">

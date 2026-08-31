@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react"
 import { BsChevronDown } from "react-icons/bs"
 import { IoIosArrowBack } from "react-icons/io"
+import { FaStar } from "react-icons/fa"
 import { useSelector } from "react-redux"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
-import IconBtn from "../../common/IconBtn"
 
 export default function VideoDetailsSidebar({ setReviewModal }) {
   const [activeStatus, setActiveStatus] = useState("")
@@ -59,11 +59,14 @@ export default function VideoDetailsSidebar({ setReviewModal }) {
             >
               <IoIosArrowBack size={30} />
             </div>
-            <IconBtn
-              text="Add Review"
-              customClasses="ml-auto"
-              onclick={() => setReviewModal(true)}
-            />
+            <button
+              onClick={() => setReviewModal(true)}
+              className="ml-auto flex cursor-pointer items-center gap-x-2 rounded-md bg-yellow-50 px-4 py-2 text-sm font-semibold text-richblack-900 shadow-md shadow-black/30 transition-all duration-200 hover:scale-95 hover:bg-yellow-100"
+              title="Add Review"
+            >
+              <FaStar className="text-richblack-900" />
+              Add Review
+            </button>
           </div>
           
           <div className="flex flex-col">

@@ -127,7 +127,7 @@ exports.editCourse = async (req, res) => {
         }
 
         for (const key in updates) {
-            if (updates.hasOwnProperty(key) && key !== "courseId" && key !== "thumbnailImage") {
+            if (Object.prototype.hasOwnProperty.call(updates, key) && key !== "courseId" && key !== "thumbnailImage") {
                 if (key === "tag" || key === "instructions") {
                     course[key] = JSON.parse(updates[key]);
                 } else {

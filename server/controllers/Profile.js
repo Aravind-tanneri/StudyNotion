@@ -1,5 +1,7 @@
 const Profile = require("../models/Profile");
 const User = require("../models/User");
+const Course = require("../models/Course");
+const CourseProgress = require("../models/CourseProgress");
 const { uploadImageToCloudinary } = require("../utils/fileUploader");
 require("dotenv").config();
 
@@ -63,9 +65,6 @@ exports.updateDisplayPicture = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 };
-
-
-const Course = require("../models/Course");
 
 // We fetch and calculate the analytics for our instructor dashboard
 exports.instructorDashboard = async (req, res) => {
@@ -140,12 +139,119 @@ exports.getAllUserDetails = async (req, res) => {
 exports.getEnrolledCourses = async (req, res) => {
     try {
         const userId = req.user.id;
-        let userDetails = await User.findOne({ _id: userId }).populate("courses").exec();
+        let userDetails = await User.findOne({ _id: userId })
+            .populate({
+                path: "courses",
+                populate: {
+                    path: "courseContent",
+                    populate: { path: "subSection" },
+                },
+            })
+            .exec();
         if (!userDetails) {
             return res.status(400).json({ success: false, message: `Could not find user with id: ${userId}` });
         }
-        return res.status(200).json({ success: true, data: userDetails.courses });
+
+        const progressRecords = await CourseProgress.find({ userId });
+
+        const courses = userDetails.courses.map((course) => {
+            const totalSubSections = course.courseContent.reduce(
+                (total, section) => total + (section.subSection?.length || 0),
+                0
+            );
+            const progressRecord = progressRecords.find(
+                (record) => String(record.courseID) === String(course._id)
+            );
+            const completedVideos = progressRecord?.completedVideos?.length || 0;
+            const progressPercentage =
+                totalSubSections === 0 ? 0 : Math.round((completedVideos / totalSubSections) * 100);
+
+            const totalDuration = course.courseContent.reduce(
+                (total, section) =>
+                    total +
+                    (section.subSection || []).reduce(
+                        (sum, subSection) =>
+                            sum + (Number(subSection.timeDuration) || 0),
+                        0
+                    ),
+                0
+            );
+
+            return {
+                ...course._doc,
+                totalSubSections,
+                completedVideos,
+                progressPercentage,
+                totalDuration,
+            };
+        });
+
+        return res.status(200).json({ success: true, data: courses });
     } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// Marks every lecture of a course as completed for the current student
+exports.markCourseComplete = async (req, res) => {
+    try {
+        const { courseId } = req.body;
+        const userId = req.user.id;
+
+        if (!courseId) {
+            return res.status(400).json({ success: false, message: "courseId is required" });
+        }
+
+        const course = await Course.findById(courseId).populate({
+            path: "courseContent",
+            populate: { path: "subSection" },
+        });
+
+        if (!course) {
+            return res.status(404).json({ success: false, message: "Course not found" });
+        }
+
+        const allSubSectionIds = course.courseContent.flatMap((section) =>
+            (section.subSection || []).map((subSection) => subSection._id)
+        );
+
+        const courseProgress = await CourseProgress.findOneAndUpdate(
+            { courseID: courseId, userId },
+            { $addToSet: { completedVideos: { $each: allSubSectionIds } } },
+            { new: true, upsert: true }
+        );
+
+        return res.status(200).json({
+            success: true,
+            message: "Course marked as completed",
+            data: { completedVideos: courseProgress.completedVideos },
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+// Unenrolls the current student from a course and clears related progress
+exports.removeCourseFromEnrollment = async (req, res) => {
+    try {
+        const { courseId } = req.body;
+        const userId = req.user.id;
+
+        if (!courseId) {
+            return res.status(400).json({ success: false, message: "courseId is required" });
+        }
+
+        await User.findByIdAndUpdate(userId, { $pull: { courses: courseId } });
+        await Course.findByIdAndUpdate(courseId, { $pull: { studentsEnrolled: userId } });
+        await CourseProgress.deleteMany({ courseID: courseId, userId });
+
+        return res.status(200).json({
+            success: true,
+            message: "Course removed from your enrollments",
+        });
+    } catch (error) {
+        console.error(error);
         return res.status(500).json({ success: false, message: error.message });
     }
 };

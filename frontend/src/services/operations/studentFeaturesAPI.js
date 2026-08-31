@@ -25,6 +25,12 @@ function loadScript(src) {
 
 // We trigger the purchase flow for our students
 export async function buyCourse(token, courses, userDetails, navigate, dispatch) {
+  // Only signed-in students are allowed to purchase courses
+  if (!token || userDetails?.accountType !== "Student") {
+    toast.error("Please sign in as a Student to purchase a course")
+    return
+  }
+
   const toastId = toast.loading("Loading...")
   try {
     // We load the script and check if it successfully attached to our DOM

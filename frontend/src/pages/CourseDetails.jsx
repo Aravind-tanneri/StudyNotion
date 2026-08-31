@@ -60,6 +60,10 @@ export default function CourseDetails() {
 
     // 2. Your Buy Course Logic
     const handleBuyCourse = () => {
+        if (user && user?.accountType !== "Student") {
+            toast.error("Please sign in as a Student to purchase a course")
+            return
+        }
         if (token) {
             buyCourse(token, [courseId], user, navigate, dispatch)
             return

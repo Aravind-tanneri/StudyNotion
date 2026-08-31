@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
-import { getUserEnrolledCourses } from "../../../services/operations/profileAPI"
+import {
+  getUserEnrolledCourses,
+  markCourseComplete,
+  removeCourseFromEnrollment,
+} from "../../../services/operations/profileAPI"
 import { BsThreeDotsVertical } from "react-icons/bs"
 
 export default function EnrolledCourses() {
@@ -11,6 +15,19 @@ export default function EnrolledCourses() {
   const [enrolledCourses, setEnrolledCourses] = useState(null)
   const [activeTab, setActiveTab] = useState("All")
   const [openMenuFor, setOpenMenuFor] = useState(null)
+  const [loadingAction, setLoadingAction] = useState(null)
+
+  // Format a duration given in seconds into a readable "Xh Ym" string
+  const formatDuration = (seconds) => {
+    const totalSeconds = Math.round(Number(seconds) || 0)
+    if (totalSeconds <= 0) return "—"
+    const hours = Math.floor(totalSeconds / 3600)
+    const minutes = Math.floor((totalSeconds % 3600) / 60)
+    if (hours > 0 && minutes > 0) return `${hours}h ${minutes}m`
+    if (hours > 0) return `${hours}h`
+    if (minutes > 0) return `${minutes}m`
+    return `${totalSeconds}s`
+  }
 
   const getEnrolledCourses = async () => {
     try {
@@ -24,6 +41,24 @@ export default function EnrolledCourses() {
     getEnrolledCourses()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Mark the course as fully completed and refresh the list
+  const handleMarkCompleted = async (courseId) => {
+    setLoadingAction(courseId)
+    const success = await markCourseComplete(courseId, token)
+    setOpenMenuFor(null)
+    setLoadingAction(null)
+    if (success) getEnrolledCourses()
+  }
+
+  // Remove the course from enrollments and refresh the list
+  const handleRemoveCourse = async (courseId) => {
+    setLoadingAction(courseId)
+    const success = await removeCourseFromEnrollment(courseId, token)
+    setOpenMenuFor(null)
+    setLoadingAction(null)
+    if (success) getEnrolledCourses()
+  }
 
   // If data is still null, we are waiting for the API
   if (!enrolledCourses) {
@@ -113,7 +148,7 @@ export default function EnrolledCourses() {
 
               {/* Course Duration */}
               <div className="w-1/4 px-2 py-3">
-                {course?.totalDuration || "2h 30m"}
+                {formatDuration(course?.totalDuration)}
               </div>
 
               {/* Progress Bar */}
@@ -147,22 +182,18 @@ export default function EnrolledCourses() {
                 {openMenuFor === course._id && (
                   <div className="absolute right-6 top-10 z-20 w-[160px] overflow-hidden rounded-md border border-richblack-700 bg-richblack-800 text-sm">
                     <button
-                      className="w-full px-4 py-3 text-left hover:bg-richblack-700"
-                      onClick={() => {
-                        setOpenMenuFor(null)
-                        // UI-only: mark as completed is not wired to backend yet
-                      }}
+                      className="w-full px-4 py-3 text-left text-richblack-5 hover:bg-richblack-700 disabled:opacity-50"
+                      disabled={loadingAction === course._id}
+                      onClick={() => handleMarkCompleted(course._id)}
                     >
-                      Mark as Completed
+                      {loadingAction === course._id ? "Updating..." : "Mark as Completed"}
                     </button>
                     <button
-                      className="w-full px-4 py-3 text-left hover:bg-richblack-700"
-                      onClick={() => {
-                        setOpenMenuFor(null)
-                        // UI-only: remove is not wired to backend yet
-                      }}
+                      className="w-full px-4 py-3 text-left text-pink-200 hover:bg-richblack-700 disabled:opacity-50"
+                      disabled={loadingAction === course._id}
+                      onClick={() => handleRemoveCourse(course._id)}
                     >
-                      Remove
+                      {loadingAction === course._id ? "Removing..." : "Remove"}
                     </button>
                   </div>
                 )}

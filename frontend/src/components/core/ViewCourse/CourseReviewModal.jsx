@@ -50,13 +50,16 @@ export default function CourseReviewModal({ setReviewModal }) {
   }
 
   return (
-    <div className="fixed inset-0 z-[1000] !mt-0 grid h-screen w-screen place-items-center overflow-auto bg-white bg-opacity-10 backdrop-blur-sm">
-      <div className="my-10 w-11/12 max-w-[700px] rounded-lg border border-richblack-400 bg-richblack-800">
+    <div className="fixed inset-0 z-[1000] !mt-0 grid h-screen w-screen place-items-center overflow-auto bg-richblack-900 bg-opacity-60 backdrop-blur-sm">
+      <div className="my-10 w-11/12 max-w-[700px] rounded-lg border border-richblack-600 bg-richblack-900 shadow-2xl shadow-black">
         
         {/* Modal Header */}
-        <div className="flex items-center justify-between rounded-t-lg bg-richblack-700 p-5">
+        <div className="flex items-center justify-between rounded-t-lg border-b border-richblack-600 bg-richblack-800 p-5">
           <p className="text-xl font-semibold text-richblack-5">Add Review</p>
-          <button onClick={() => setReviewModal(false)}>
+          <button
+            onClick={() => setReviewModal(false)}
+            className="rounded-md p-1 transition-all hover:bg-richblack-700"
+          >
             <RxCross2 className="text-2xl text-richblack-5" />
           </button>
         </div>

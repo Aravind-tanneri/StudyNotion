@@ -30,12 +30,12 @@ router.get("/getInstructorCourses", auth, isInstructor, getInstructorCourses);
 // Section Routes
 router.post("/addSection", auth, isInstructor, createSection);
 router.post("/updateSection", auth, isInstructor, updateSection);
-router.post("/deleteSection", auth, isInstructor, deleteSection);
+router.delete("/deleteSection", auth, isInstructor, deleteSection);
 
 // SubSection Routes
 router.post("/addSubSection", auth, isInstructor, createSubSection);
 router.post("/updateSubSection", auth, isInstructor, updateSubSection);
-router.post("/deleteSubSection", auth, isInstructor, deleteSubSection);
+router.delete("/deleteSubSection", auth, isInstructor, deleteSubSection);
 
 // Category Routes
 router.post("/createCategory", auth, isAdmin, createCategory);

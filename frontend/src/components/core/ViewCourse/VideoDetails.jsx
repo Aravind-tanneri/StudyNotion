@@ -2,11 +2,11 @@ import { useEffect, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { Player, BigPlayButton } from "video-react"
-import "video-react/dist/video-react.css" 
+import "video-react/dist/video-react.css"
+import { FaCheckCircle, FaRedo } from "react-icons/fa"
 
 import { updateCompletedLectures } from "../../../slices/viewCourseSlice"
 import { markLectureAsComplete } from "../../../services/operations/courseDetailsAPI"
-import IconBtn from "../../common/IconBtn"
 
 export default function VideoDetails() {
   const { courseId, sectionId, subSectionId } = useParams()
@@ -142,36 +142,50 @@ export default function VideoDetails() {
               }}
               className="full absolute inset-0 z-[100] grid h-full place-content-center font-inter"
             >
-              {!completedLectures.includes(subSectionId) && (
-                <IconBtn
-                  disabled={loading}
-                  onclick={() => handleLectureCompletion()}
-                  text={!loading ? "Mark As Completed" : "Loading..."}
-                  customClasses="text-xl max-w-max px-4 mx-auto"
-                />
-              )}
+              <div className="flex flex-col items-center gap-3">
+                {!completedLectures.includes(subSectionId) && (
+                  <button
+                    disabled={loading}
+                    onClick={handleLectureCompletion}
+                    className="flex cursor-pointer items-center gap-x-2 rounded-lg bg-yellow-50 px-8 py-4 text-lg font-bold text-richblack-900 shadow-lg shadow-black/40 transition-all duration-200 hover:scale-95 hover:bg-yellow-100 disabled:opacity-60"
+                  >
+                    <FaCheckCircle size={24} />
+                    {loading ? "Loading..." : "Mark As Completed"}
+                  </button>
+                )}
 
-              <IconBtn
-                disabled={loading}
-                onclick={() => {
-                  if (playerRef?.current) {
-                    playerRef?.current?.seek(0)
-                    playerRef?.current?.play()
-                    setVideoEnded(false)
-                  }
-                }}
-                text="Rewatch"
-                customClasses="text-xl max-w-max px-4 mx-auto mt-2"
-              />
+                <button
+                  disabled={loading}
+                  onClick={() => {
+                    if (playerRef?.current) {
+                      playerRef?.current?.seek(0)
+                      playerRef?.current?.play()
+                      setVideoEnded(false)
+                    }
+                  }}
+                  className="flex cursor-pointer items-center gap-x-2 rounded-lg border-2 border-richblack-400/60 bg-richblack-900/60 px-8 py-3 text-lg font-semibold text-richblack-5 backdrop-blur-sm transition-all duration-200 hover:scale-95 hover:border-richblack-200 disabled:opacity-60"
+                >
+                  <FaRedo size={20} />
+                  Rewatch
+                </button>
+              </div>
 
               <div className="mt-10 flex min-w-[250px] justify-center gap-x-4 text-xl">
                 {!isFirstVideo() && (
-                  <button disabled={loading} onClick={goToPrevVideo} className="blackButton">
+                  <button
+                    disabled={loading}
+                    onClick={goToPrevVideo}
+                    className="rounded-lg border border-richblack-400/40 bg-richblack-900/60 px-6 py-3 font-semibold text-richblack-100 backdrop-blur-sm transition-all duration-200 hover:scale-95 hover:bg-richblack-800"
+                  >
                     Prev
                   </button>
                 )}
                 {!isLastVideo() && (
-                  <button disabled={loading} onClick={goToNextVideo} className="blackButton">
+                  <button
+                    disabled={loading}
+                    onClick={goToNextVideo}
+                    className="rounded-lg bg-richblack-700 px-6 py-3 font-semibold text-richblack-5 transition-all duration-200 hover:scale-95 hover:bg-richblack-600"
+                  >
                     Next
                   </button>
                 )}
